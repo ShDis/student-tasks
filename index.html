@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Задания</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600&family=Unbounded:wght@500&display=swap">
+<style>
+  :root {
+    color-scheme: light dark;
+    --ground: #f3f4f7;
+    --surface: #ffffff;
+    --ink: #171a23;
+    --ink-2: #4d5466;
+    --rule: #dfe2ea;
+    --accent: #2c52cc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #101218;
+      --surface: #171a22;
+      --ink: #e8ebf2;
+      --ink-2: #a7aebe;
+      --rule: #262a35;
+      --accent: #8fa8ff;
+    }
+  }
+  body {
+    margin: 0;
+    padding: 64px 20px;
+    background: var(--ground);
+    color: var(--ink);
+    font: 17px/1.6 'Golos Text', system-ui, sans-serif;
+  }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font: 500 30px/1.2 'Unbounded', 'Golos Text', sans-serif; margin: 0 0 28px; }
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  a {
+    display: block;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover { border-color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .no { font-size: 13px; color: var(--accent); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .name { display: block; font-weight: 600; font-size: 19px; }
+  .what { color: var(--ink-2); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Задания</h1>
+  <ol>
+    <li>
+      <a href="portfolio-1/">
+        <span class="no">Задание 1</span>
+        <span class="name">Сайт-портфолио с таймлайном проектов</span>
+        <span class="what">HTML и CSS, публикация на GitHub Pages</span>
+      </a>
+    </li>
+  </ol>
+</main>
+</body>
+</html>
