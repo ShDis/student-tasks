@@ -1,0 +1,7 @@
+# Everything the build scripts generate
+site-test-2/
+react-test/
+stage-builds/
+standalone-*/
+portfolio-3-tutorial.html
+__pycache__/

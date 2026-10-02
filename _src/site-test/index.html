@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Имя Фамилия — портфолио</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="top-bar">
+        <nav>
+            <a href="#about">Обо мне</a>
+            <a href="#projects">Проекты</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about" class="about">
+            <div class="profile">
+                <img src="images/avatar.jpg" alt="Фото: Имя Фамилия" class="avatar">
+                <h1>Имя Фамилия</h1>
+                <p class="tagline">Изучаю веб-разработку и дизайн</p>
+
+                <h2>Контакты</h2>
+                <ul class="contacts">
+                    <li><a href="mailto:name@example.com">name@example.com</a></li>
+                    <li><a href="https://t.me/username" target="_blank">Telegram</a></li>
+                    <li><a href="https://github.com/username" target="_blank">GitHub</a></li>
+                </ul>
+            </div>
+            <div class="timeline-block">
+                <h2>Мой путь</h2>
+
+                <div class="timeline">
+
+                    <article class="timeline-item">
+                        <a href="#project-portfolio">
+                            <div class="date">Сентябрь 2026</div>
+                            <h3>Сайт-портфолио</h3>
+                            <p>Первый сайт на HTML и CSS, опубликован на GitHub Pages</p>
+                        </a>
+                    </article>
+
+                    <article class="timeline-item">
+                        <a href="#project-coffee">
+                            <div class="date">Май 2026</div>
+                            <h3>Лендинг для кофейни</h3>
+                            <p>Учебный проект: макет в Figma и вёрстка</p>
+                        </a>
+                    </article>
+
+                    <article class="timeline-item">
+                        <div class="date">Март 2026</div>
+                        <h3>Трекер привычек <span class="tag">Хакатон</span></h3>
+                        <p>Дизайн интерфейса в команде из 4 человек за 48 часов</p>
+                    </article>
+
+                    <article class="timeline-item">
+                        <a href="#project-cat">
+                            <div class="date">Январь 2026</div>
+                            <h3>Игра «Кот в лабиринте»</h3>
+                            <p>Игра на Scratch: 10 уровней и таблица рекордов</p>
+                        </a>
+                    </article>
+
+                    <article class="timeline-item">
+                        <div class="date">Октябрь 2025</div>
+                        <h3>Курс «Основы HTML и CSS»</h3>
+                        <p>Онлайн-курс: 24 урока и итоговый проект</p>
+                    </article>
+
+                    <article class="timeline-item">
+                        <a href="#project-photo">
+                            <div class="date">Лето 2025</div>
+                            <h3>Фотопроект «Город после дождя»</h3>
+                            <p>Серия из 12 фотографий</p>
+                        </a>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects">
+            <h2>Проекты</h2>
+
+            <article class="card" id="project-portfolio">
+                <img src="images/project-1.jpg" alt="Скриншот сайта-портфолио">
+                <div class="card-body">
+                    <h3>Сайт-портфолио</h3>
+                    <p>Этот сайт: вёрстка на HTML и CSS, таймлайн, версия для телефона и публикация на GitHub Pages.</p>
+                    <div class="card-links">
+                        <a href="https://github.com/username/username.github.io" target="_blank">Код на GitHub</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card" id="project-coffee">
+                <img src="images/project-2.jpg" alt="Главный экран лендинга кофейни">
+                <div class="card-body">
+                    <h3>Лендинг для кофейни</h3>
+                    <p>Одностраничный сайт с меню, фотографиями зала и формой бронирования столика.</p>
+                    <div class="card-links">
+                        <a href="https://example.com" target="_blank">Открыть сайт</a>
+                        <a href="https://example.com" target="_blank">Макет в Figma</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card" id="project-cat">
+                <img src="images/project-3.jpg" alt="Уровень из игры «Кот в лабиринте»">
+                <div class="card-body">
+                    <h3>Игра «Кот в лабиринте»</h3>
+                    <p>Кот ищет выход из лабиринта и собирает рыбок. Десять уровней, таймер и таблица рекордов.</p>
+                    <div class="card-links">
+                        <a href="https://example.com" target="_blank">Играть на Scratch</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card" id="project-photo">
+                <img src="images/project-4.jpg" alt="Фотография из серии «Город после дождя»">
+                <div class="card-body">
+                    <h3>Фотопроект «Город после дождя»</h3>
+                    <p>Серия из 12 фотографий: отражения в лужах, мокрый асфальт и вечерние огни.</p>
+                    <div class="card-links">
+                        <a href="https://example.com" target="_blank">Смотреть все фото</a>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+</body>
+</html>

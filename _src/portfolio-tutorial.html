@@ -1,0 +1,1792 @@
+<title>Портфолио на HTML и CSS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --ground: #f3f4f7;
+    --surface: #ffffff;
+    --ink: #171a23;
+    --ink-2: #4d5466;
+    --ink-3: #868c9c;
+    --rule: #dfe2ea;
+    --rule-strong: #c3c8d4;
+    --accent: #2c52cc;
+    --accent-soft: #e8edfb;
+    --ok: #17784f;
+    --ok-soft: #e3f3ea;
+    --warn: #a44d17;
+    --warn-soft: #fbede3;
+    --tip: #5f45ad;
+    --tip-soft: #efebfa;
+    --code-bg: #171a24;
+    --code-bar: #212532;
+    --code-ink: #e4e7ef;
+    --code-dim: #8a92a6;
+    --kbd-bg: #ffffff;
+    --shadow: 0 1px 2px rgba(23, 26, 35, .06), 0 8px 24px rgba(23, 26, 35, .06);
+
+    --f-display: 'Unbounded', 'Golos Text', system-ui, sans-serif;
+    --f-body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --f-mono: 'JetBrains Mono', ui-monospace, Consolas, 'Courier New', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #101218;
+      --surface: #171a22;
+      --ink: #e8ebf2;
+      --ink-2: #a7aebe;
+      --ink-3: #737a8b;
+      --rule: #262a35;
+      --rule-strong: #3a4050;
+      --accent: #8fa8ff;
+      --accent-soft: #1c2440;
+      --ok: #62cf9a;
+      --ok-soft: #13261d;
+      --warn: #f1a46f;
+      --warn-soft: #2b1d14;
+      --tip: #baa5f5;
+      --tip-soft: #221c35;
+      --code-bg: #0c0e13;
+      --code-bar: #161922;
+      --kbd-bg: #1f232d;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #101218;
+    --surface: #171a22;
+    --ink: #e8ebf2;
+    --ink-2: #a7aebe;
+    --ink-3: #737a8b;
+    --rule: #262a35;
+    --rule-strong: #3a4050;
+    --accent: #8fa8ff;
+    --accent-soft: #1c2440;
+    --ok: #62cf9a;
+    --ok-soft: #13261d;
+    --warn: #f1a46f;
+    --warn-soft: #2b1d14;
+    --tip: #baa5f5;
+    --tip-soft: #221c35;
+    --code-bg: #0c0e13;
+    --code-bar: #161922;
+    --kbd-bg: #1f232d;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  /* ---------- layout ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "intro" "toc" "main";
+    max-width: 800px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 40px 96px;
+    column-gap: 56px;
+  }
+  .intro { grid-area: intro; }
+  .toc { grid-area: toc; }
+  main { grid-area: main; min-width: 0; }
+
+  @media (min-width: 1180px) {
+    .layout {
+      max-width: 1140px;
+      grid-template-columns: 240px minmax(0, 1fr);
+      grid-template-areas: "toc intro" "toc main";
+    }
+    .toc {
+      align-self: start;
+      position: sticky;
+      top: 24px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-top: 8px;
+    }
+  }
+
+  /* ---------- intro ---------- */
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(30px, 5.2vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -.01em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  .lede {
+    font-size: 19px;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0 0 32px;
+  }
+
+  /* ---------- preview ---------- */
+  .preview {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .pv-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pv-title { font-weight: 600; margin: 0; }
+  .seg {
+    display: inline-flex;
+    background: var(--ground);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .seg button {
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-2);
+    background: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 5px 14px;
+    cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+  }
+  .pv-stage {
+    padding: 20px 16px;
+    background:
+      radial-gradient(circle at 1px 1px, var(--rule) 1px, transparent 0) 0 0 / 16px 16px,
+      var(--ground);
+    display: flex;
+    justify-content: center;
+  }
+  .pv-window {
+    background: #0b0c10;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
+    max-width: 100%;
+  }
+  .pv-window.phone { border-radius: 26px; border: 6px solid #0b0c10; }
+  .pv-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #22252e;
+  }
+  .pv-dots { display: flex; gap: 6px; }
+  .pv-dots i { width: 10px; height: 10px; border-radius: 50%; background: #4a4e5a; display: block; }
+  .phone .pv-dots { display: none; }
+  .pv-url {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: #c9ccd6;
+    background: #14161c;
+    border-radius: 6px;
+    padding: 3px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pv-screen { position: relative; overflow: hidden; background: #14161f; }
+  .pv-screen iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+    transform-origin: 0 0;
+    background: #14161f;
+  }
+  .pv-caption { font-size: 15px; color: var(--ink-2); margin: 0 0 8px; max-width: 70ch; }
+
+  /* ---------- toc ---------- */
+  .toc {
+    font-size: 14.5px;
+    line-height: 1.4;
+    margin: 40px 0 8px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+  }
+  @media (min-width: 1180px) {
+    .toc { margin: 0; padding: 8px 0 0; background: none; border: 0; }
+  }
+  .toc-title {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 12px;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; }
+  .toc > ol > li { margin-bottom: 12px; }
+  .toc > ol > li > a { font-weight: 600; color: var(--ink); text-decoration: none; }
+  .toc ol ol { margin-top: 6px; display: grid; gap: 4px; }
+  .toc ol ol a {
+    display: flex;
+    gap: 8px;
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .toc ol ol a span { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-3); min-width: 2ch; text-align: right; padding-top: 1px; }
+  .toc a:hover { color: var(--accent); }
+  @media (max-width: 1179px) {
+    .toc > ol { columns: 2 220px; column-gap: 28px; }
+    .toc > ol > li { break-inside: avoid; }
+  }
+
+  /* ---------- content ---------- */
+  .part {
+    margin-top: 72px;
+    padding-top: 36px;
+    border-top: 1px solid var(--rule-strong);
+    scroll-margin-top: 16px;
+  }
+  .part:first-child { margin-top: 48px; }
+  .part-no {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(23px, 3.4vw, 29px);
+    line-height: 1.2;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .step { margin-top: 48px; scroll-margin-top: 16px; }
+  h3 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    font-size: 21px;
+    font-weight: 650;
+    line-height: 1.3;
+    margin: 0 0 12px;
+  }
+  .step-no {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    position: relative;
+    top: -2px;
+  }
+  h4 { font-size: 17px; font-weight: 650; margin: 24px 0 8px; }
+  p, ul, ol { margin: 0 0 14px; }
+  main p, main li { max-width: 68ch; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--ink-3); }
+  strong { font-weight: 650; }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: .84em;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 1px 5px;
+    white-space: nowrap;
+  }
+  kbd {
+    font-family: var(--f-mono);
+    font-size: .8em;
+    background: var(--kbd-bg);
+    border: 1px solid var(--rule-strong);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+  .ui { font-weight: 650; }
+
+  /* ---------- code blocks ---------- */
+  .code {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0 18px;
+  }
+  .code-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 8px 10px 8px 16px;
+    background: var(--code-bar);
+    font-size: 13px;
+  }
+  .code-file { font-family: var(--f-mono); font-weight: 700; color: #fff; }
+  .code-where { color: var(--code-dim); flex: 1; min-width: 0; }
+  .code-where b { font-family: var(--f-mono); font-weight: 500; color: #f5c46b; }
+  .copy {
+    margin-left: auto;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 7px;
+    padding: 4px 12px;
+    cursor: pointer;
+  }
+  .copy:hover { background: rgba(255, 255, 255, .18); }
+  .copy.done { background: #1f7a50; border-color: #1f7a50; }
+  .code pre {
+    margin: 0;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: var(--f-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+    tab-size: 4;
+  }
+  .code pre code { background: none; border: 0; padding: 0; font-size: inherit; white-space: pre; color: inherit; }
+  .code.short pre { font-size: 14px; }
+
+  .hljs-comment, .hljs-meta { color: #7a8398; font-style: italic; }
+  .hljs-tag { color: #8e97ab; }
+  .hljs-name, .hljs-selector-tag { color: #ff9e7d; }
+  .hljs-attr, .hljs-attribute { color: #8fc9ff; }
+  .hljs-string { color: #a6e3a9; }
+  .hljs-selector-class, .hljs-selector-id { color: #f5c46b; }
+  .hljs-selector-pseudo { color: #ff9e7d; }
+  .hljs-number { color: #ffb489; }
+  .hljs-built_in, .hljs-keyword { color: #d6a8ff; }
+  .hljs-variable { color: #f5c46b; }
+
+  /* ---------- notes ---------- */
+  .note {
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 18px 0;
+    background: var(--tip-soft);
+  }
+  .note > :last-child { margin-bottom: 0; }
+  .note-label {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--tip);
+    margin: 0 0 4px;
+  }
+  .note.check { background: var(--ok-soft); }
+  .note.check .note-label { color: var(--ok); }
+  .note.pitfall { background: var(--warn-soft); }
+  .note.pitfall .note-label { color: var(--warn); }
+  .note code { background: var(--surface); }
+
+  /* ---------- requirement list ---------- */
+  .reqs { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .reqs li {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    margin: 0;
+  }
+  .reqs li::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    margin-top: 6px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+  }
+
+  /* ---------- page map ---------- */
+  .map {
+    margin: 20px 0;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    display: grid;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .map-box {
+    border: 1.5px dashed var(--rule-strong);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+  .map-box.solid { border-style: solid; background: var(--ground); }
+  .map-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+  .map-sel { font-family: var(--f-mono); font-size: 13px; font-weight: 700; color: var(--ink); overflow-wrap: anywhere; }
+  .map-step { font-family: var(--f-mono); font-size: 12px; color: var(--accent); white-space: nowrap; }
+  .map-what { color: var(--ink-2); margin: 0; }
+  .map-cols { display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px; }
+  @media (max-width: 520px) { .map-cols { grid-template-columns: 1fr; } }
+  .map figcaption { font-size: 14px; color: var(--ink-2); padding: 2px 2px 0; }
+
+  /* ---------- diagram ---------- */
+  .diagram {
+    margin: 18px 0;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+  }
+  .diagram .scroll { overflow-x: auto; }
+  .diagram svg { display: block; width: 100%; min-width: 460px; height: auto; }
+  .d-line { fill: var(--rule-strong); }
+  .d-dot { fill: var(--surface); stroke: #e0a22e; stroke-width: 12; }
+  .d-date { fill: #e0a22e; }
+  .d-title { fill: var(--ink); }
+  .d-text { fill: var(--ink-3); }
+  .d-guide { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 4 4; fill: none; }
+  .d-dim { stroke: var(--accent); stroke-width: 2; fill: none; }
+  .d-label { fill: var(--ink); font-family: var(--f-mono); font-size: 15px; }
+  .d-label.accent { fill: var(--accent); font-weight: 700; }
+  .diagram figcaption { font-size: 14px; color: var(--ink-2); margin-top: 10px; }
+
+  /* ---------- table ---------- */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 13px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+  td:first-child { font-weight: 600; width: 34%; }
+  td ul { margin: 0; padding-left: 18px; }
+  td li { margin-bottom: 4px; }
+
+  /* ---------- checklist ---------- */
+  .checklist { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 2px; }
+  .checklist li { margin: 0; max-width: none; }
+  .checklist label {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .checklist label:hover { background: var(--surface); }
+  .checklist input { width: 18px; height: 18px; margin: 4px 0 0; accent-color: var(--ok); cursor: pointer; }
+  .checklist input:checked + span { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--ink-3); }
+  .progress { font-family: var(--f-mono); font-size: 13px; color: var(--ink-2); margin: 0; }
+  .progress b { color: var(--ok); }
+
+  .send {
+    margin-top: 24px;
+    padding: 18px 20px;
+    border: 1.5px solid var(--accent);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .send p:last-child { margin-bottom: 0; }
+
+  .muted { color: var(--ink-2); }
+  .foot { margin-top: 56px; font-size: 14px; color: var(--ink-3); }
+</style>
+
+<div class="layout">
+
+  <header class="intro">
+    <p class="eyebrow">Задание 1 · пошаговая инструкция</p>
+    <h1>Сайт-портфолио с&nbsp;таймлайном проектов</h1>
+    <p class="lede">Вы сделаете личный сайт на HTML и CSS: фото, контакты, таймлайн ваших проектов и карточки с подробностями. А потом опубликуете его в интернете через GitHub Pages — бесплатно, по адресу вида <b>ваш-логин.github.io</b>.</p>
+
+    <section class="preview" aria-label="Пример готового сайта">
+      <div class="pv-toolbar">
+        <p class="pv-title">Что получится</p>
+        <div class="seg" role="group" aria-label="Размер экрана">
+          <button type="button" id="pv-desktop" aria-pressed="true">Компьютер</button>
+          <button type="button" id="pv-phone" aria-pressed="false">Телефон</button>
+        </div>
+      </div>
+      <div class="pv-stage" id="pv-stage">
+        <div class="pv-window" id="pv-window">
+          <div class="pv-bar"><span class="pv-dots"><i></i><i></i><i></i></span><span class="pv-url">https://ваш-логин.github.io</span></div>
+          <div class="pv-screen" id="pv-screen">
+            <iframe id="pv-frame" title="Пример готового сайта-портфолио"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+    <p class="pv-caption">Это живой пример: его можно прокручивать, а клик по записи в таймлайне ведёт к карточке проекта. Цветные прямоугольники — заглушки на месте ваших картинок. Код примера целиком — <a href="#full">в конце инструкции</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Содержание">
+    <p class="toc-title">Содержание</p>
+    <ol>
+      <li><a href="#before">Перед началом</a></li>
+      <li><a href="#part-1">1. Подготовка</a>
+        <ol>
+          <li><a href="#step-1"><span>1</span>Редактор кода</a></li>
+          <li><a href="#step-2"><span>2</span>Папка проекта</a></li>
+          <li><a href="#step-3"><span>3</span>Материалы</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-2">2. HTML: содержимое</a>
+        <ol>
+          <li><a href="#step-4"><span>4</span>Каркас страницы</a></li>
+          <li><a href="#step-5"><span>5</span>Шапка с меню</a></li>
+          <li><a href="#step-6"><span>6</span>Профиль и контакты</a></li>
+          <li><a href="#step-7"><span>7</span>Таймлайн</a></li>
+          <li><a href="#step-8"><span>8</span>Карточки проектов</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-3">3. CSS: оформление</a>
+        <ol>
+          <li><a href="#step-9"><span>9</span>Цвета и основа</a></li>
+          <li><a href="#step-10"><span>10</span>Шапка</a></li>
+          <li><a href="#step-11"><span>11</span>Колонки и профиль</a></li>
+          <li><a href="#step-12"><span>12</span>Таймлайн</a></li>
+          <li><a href="#step-13"><span>13</span>Карточки</a></li>
+          <li><a href="#step-14"><span>14</span>Версия для телефона</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-4">4. Публикация</a>
+        <ol>
+          <li><a href="#step-15"><span>15</span>Аккаунт GitHub</a></li>
+          <li><a href="#step-16"><span>16</span>Репозиторий</a></li>
+          <li><a href="#step-17"><span>17</span>Загрузка файлов</a></li>
+          <li><a href="#step-18"><span>18</span>GitHub Pages</a></li>
+          <li><a href="#step-19"><span>19</span>Обновление сайта</a></li>
+          <li><a href="#trouble"><span>?</span>Если не работает</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-5">5. Сдача</a>
+        <ol>
+          <li><a href="#step-20"><span>20</span>Версия v1</a></li>
+          <li><a href="#checklist"><span>✓</span>Самопроверка</a></li>
+        </ol>
+      </li>
+      <li><a href="#full">Полный код</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============ ПЕРЕД НАЧАЛОМ ============ -->
+    <section class="part" id="before">
+      <h2>Перед началом</h2>
+
+      <h4>Что должно быть на сайте</h4>
+      <ul class="reqs">
+        <li>Шапка с меню: «Обо мне» и «Проекты».</li>
+        <li>Ваше фото, имя, короткая подпись о себе и контакты — минимум две ссылки.</li>
+        <li>Таймлайн: не меньше 6 записей, новые сверху. У каждой записи — дата, название и одно предложение описания.</li>
+        <li>Карточки проектов: не меньше 4. У каждой — картинка, описание и ссылка, если есть куда вести.</li>
+        <li>Клик по записи в таймлайне прокручивает к карточке этого проекта. Записи без карточки (например, курс) — просто текст.</li>
+        <li>На телефоне колонки встают друг под друга, и ничего не вылезает за край экрана.</li>
+        <li>Сайт открывается в интернете по адресу <b>https://ваш-логин.github.io</b>.</li>
+      </ul>
+
+      <h4>Что понадобится</h4>
+      <ul>
+        <li>Компьютер с Windows или macOS и браузер: Chrome, Edge или Firefox.</li>
+        <li>Электронная почта — для регистрации на GitHub.</li>
+        <li>Ваше фото и материалы о 6 или больше проектах. Что считать проектом — в <a href="#step-3">шаге 3</a>.</li>
+      </ul>
+
+      <h4>Как работать с инструкцией</h4>
+      <p>Идите по шагам по порядку. Код копируйте кнопкой <b>Копировать</b> — над каждым блоком кода написано, в какой файл и куда его вставить. После каждого шага сохраняйте файл и смотрите на результат в браузере: так ошибку легко поймать сразу, а не искать потом во всём коде.</p>
+    </section>
+
+    <!-- ============ ЧАСТЬ 1 ============ -->
+    <section class="part" id="part-1">
+      <p class="part-no">Часть 1</p>
+      <h2>Подготовка</h2>
+
+      <section class="step" id="step-1">
+        <h3><span class="step-no">Шаг 1</span>Установите редактор кода</h3>
+        <p>Код можно писать хоть в Блокноте, но в редакторе кода удобнее: он раскрашивает теги разными цветами, сам закрывает скобки и подсказывает названия свойств.</p>
+        <p>Скачайте <b>Visual Studio Code</b> с сайта <a href="https://code.visualstudio.com" target="_blank" rel="noopener">code.visualstudio.com</a> и установите с настройками по умолчанию.</p>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Интерфейс на русском: слева нажмите значок из четырёх квадратиков (<span class="ui">Extensions</span>, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>), найдите <b>Russian Language Pack</b> и нажмите <span class="ui">Install</span>.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-2">
+        <h3><span class="step-no">Шаг 2</span>Создайте папку проекта</h3>
+        <ol>
+          <li>Создайте папку <code>portfolio</code> — например, в «Документах».</li>
+          <li>В VS Code выберите <span class="ui">File → Open Folder…</span> (Файл → Открыть папку) и откройте <code>portfolio</code>.</li>
+          <li>Слева, в панели <span class="ui">Explorer</span>, наведите курсор на название папки и нажмите значок <span class="ui">New File</span> (листок с плюсом). Назовите файл <code>index.html</code>. Так же создайте <code>style.css</code>.</li>
+          <li>Значком <span class="ui">New Folder</span> (папка с плюсом) создайте папку <code>images</code>.</li>
+        </ol>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Не создавайте файлы через «Создать → Текстовый документ» в Проводнике. Windows прячет расширения, и вместо <code>index.html</code> получится <code>index.html.txt</code> — браузер не поймёт, что это веб-страница.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-3">
+        <h3><span class="step-no">Шаг 3</span>Соберите материалы</h3>
+        <p>Прежде чем писать код, подготовьте содержимое сайта — тогда в следующих шагах останется только вставлять его.</p>
+        <ul>
+          <li><b>Фото для аватарки.</b> Лучше квадратное, лицо по центру. Сохраните как <code>images/avatar.jpg</code>.</li>
+          <li><b>6 или больше записей для таймлайна:</b> месяц и год, название, одно предложение о том, что это было и какая у вас была роль.</li>
+          <li><b>4 из них — проекты с картинкой:</b> скриншот, фото результата, обложка. Сохраните картинки как <code>images/project-1.jpg</code> … <code>images/project-4.jpg</code>. Для каждого проекта — 1–2 предложения описания и ссылка, если есть: сайт, макет, видео, пост.</li>
+        </ul>
+        <p><b>Что считать проектом.</b> Учебные работы и курсовые, хакатоны и конкурсы, онлайн-курсы, хобби — рисунки, фото, видео, игры, всё, что вы сделали сами или в команде. Для таймлайна подойдёт всё, чем вы гордитесь или чему научились.</p>
+        <p>В итоге папка выглядит так:</p>
+        <div class="code short" data-snippet="demo-tree" data-lang="plain" data-nocopy></div>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Имена файлов — только латиница, строчные буквы, без пробелов: <code>project-1.jpg</code>, а не <code>Проект 1.JPG</code>. На вашем компьютере <code>Photo.JPG</code> и <code>photo.jpg</code> — один и тот же файл, а на GitHub Pages — разные. Картинка будет видна у вас, но пропадёт на опубликованном сайте.</p>
+        </div>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Фото с телефона весят 3–5 МБ, и сайт с ними грузится медленно. Уменьшите их на <a href="https://squoosh.app" target="_blank" rel="noopener">squoosh.app</a>: ширина около 1200 пикселей, формат MozJPEG, качество 75–80. Картинка станет в 10–20 раз легче, а на глаз не изменится.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 2 ============ -->
+    <section class="part" id="part-2">
+      <p class="part-no">Часть 2</p>
+      <h2>HTML — содержимое страницы</h2>
+      <p>HTML описывает, <em>что</em> есть на странице: заголовки, текст, картинки, ссылки. Каждый элемент записывается тегом: открывающий тег, содержимое, закрывающий тег со слешем. У тегов бывают атрибуты — дополнительные настройки вида <code>имя="значение"</code>:</p>
+      <div class="code short" data-snippet="demo-tags" data-lang="html" data-nocopy data-where="пример, копировать не нужно"></div>
+      <div class="note tip">
+        <p class="note-label">Как смотреть результат</p>
+        <p>Откройте папку <code>portfolio</code> в Проводнике и дважды щёлкните <code>index.html</code> — страница откроется в браузере. Дальше цикл такой: вставили код → сохранили файл (<kbd>Ctrl</kbd>+<kbd>S</kbd>) → обновили страницу в браузере (<kbd>F5</kbd>). На macOS вместо <kbd>Ctrl</kbd> — <kbd>Cmd</kbd>, вместо <kbd>F5</kbd> — <kbd>Cmd</kbd>+<kbd>R</kbd>.</p>
+      </div>
+
+      <section class="step" id="step-4">
+        <h3><span class="step-no">Шаг 4</span>Каркас страницы</h3>
+        <p>Любая HTML-страница начинается одинаково. Скопируйте этот код в <code>index.html</code> целиком.</p>
+        <div class="code" data-snippet="html-skeleton" data-file="index.html" data-where="весь файл"></div>
+        <p>Что здесь что:</p>
+        <ul>
+          <li><code>&lt;!DOCTYPE html&gt;</code> — сообщает браузеру, что это современный HTML.</li>
+          <li><code>&lt;html lang="ru"&gt;</code> — вся страница. <code>lang</code> подсказывает язык, чтобы браузер правильно переносил слова.</li>
+          <li><code>&lt;head&gt;</code> — служебная часть, на странице её не видно. <code>charset="UTF-8"</code> — кодировка, без неё русские буквы превратятся в «кракозябры». <code>viewport</code> — чтобы на телефоне сайт не выглядел уменьшенной копией компьютерной версии. <code>&lt;title&gt;</code> — название во вкладке браузера. Первый <code>&lt;link&gt;</code> подключает шрифт Inter из Google Fonts, второй — ваш файл стилей <code>style.css</code>.</li>
+          <li><code>&lt;body&gt;</code> — всё, что видно на странице. Внутри — <code>&lt;main&gt;</code> с двумя разделами (<code>&lt;section&gt;</code>): «Обо мне» и «Проекты».</li>
+          <li><code>&lt;!-- … --&gt;</code> — комментарии, браузер их не показывает. В следующих шагах вы будете заменять каждый такой комментарий кодом.</li>
+        </ul>
+
+        <figure class="map" aria-label="Схема страницы">
+          <div class="map-box solid">
+            <div class="map-head"><span class="map-sel">header.top-bar</span><span class="map-step">шаг 5</span></div>
+            <p class="map-what">Меню: «Обо мне» · «Проекты»</p>
+          </div>
+          <div class="map-box">
+            <div class="map-head"><span class="map-sel">section#about.about</span></div>
+            <div class="map-cols">
+              <div class="map-box solid">
+                <div class="map-head"><span class="map-sel">.profile</span><span class="map-step">шаг 6</span></div>
+                <p class="map-what">Фото, имя, подпись, контакты</p>
+              </div>
+              <div class="map-box solid">
+                <div class="map-head"><span class="map-sel">.timeline-block</span><span class="map-step">шаг 7</span></div>
+                <p class="map-what">Таймлайн: записи с датами, новые сверху</p>
+              </div>
+            </div>
+          </div>
+          <div class="map-box">
+            <div class="map-head"><span class="map-sel">section#projects.projects</span></div>
+            <div class="map-box solid">
+              <div class="map-head"><span class="map-sel">article.card#project-…</span><span class="map-step">шаг 8</span></div>
+              <p class="map-what">Картинка | название, описание, ссылки — и так для каждого проекта</p>
+            </div>
+          </div>
+          <figcaption>Карта страницы. Точка в названии — класс (<code>class="about"</code>), решётка — id (<code>id="about"</code>). По этим именам CSS потом найдёт каждый блок.</figcaption>
+        </figure>
+
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Откройте <code>index.html</code> в браузере. На странице только слово «Проекты», а во вкладке — «Имя Фамилия — портфолио». Так и должно быть.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-5">
+        <h3><span class="step-no">Шаг 5</span>Шапка с меню</h3>
+        <p>Найдите в <code>index.html</code> комментарий <code>&lt;!-- ШАГ 5: шапка --&gt;</code> и замените его этим кодом:</p>
+        <div class="code" data-snippet="html-header" data-file="index.html" data-where="вместо &lt;!-- ШАГ 5: шапка --&gt;"></div>
+        <p><code>&lt;header&gt;</code> — шапка, <code>&lt;nav&gt;</code> — навигация. Ссылка <code>href="#about"</code> ведёт не на другой сайт, а к элементу этой же страницы с <code>id="about"</code>. Такие ссылки называют якорями.</p>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Отступы в начале строк браузеру не важны, но помогают видеть, что внутри чего. Если после вставки всё съехало, нажмите <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>F</kbd> — VS Code выровняет код сам.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-6">
+        <h3><span class="step-no">Шаг 6</span>Профиль и контакты</h3>
+        <p>Замените комментарий <code>&lt;!-- ШАГ 6: профиль --&gt;</code>:</p>
+        <div class="code" data-snippet="html-profile" data-file="index.html" data-where="вместо &lt;!-- ШАГ 6: профиль --&gt;"></div>
+        <ul>
+          <li><code>&lt;img&gt;</code> — картинка, закрывающего тега у неё нет. <code>src</code> — путь к файлу, <code>alt</code> — описание для тех, кто не видит картинку, и на случай, если она не загрузилась.</li>
+          <li><code>&lt;h1&gt;</code> — главный заголовок страницы, он один. <code>&lt;h2&gt;</code> и <code>&lt;h3&gt;</code> — заголовки поменьше.</li>
+          <li><code>&lt;ul&gt;</code> — список, <code>&lt;li&gt;</code> — пункт списка.</li>
+          <li><code>mailto:</code> в ссылке открывает почтовую программу, <code>target="_blank"</code> — открывает ссылку в новой вкладке.</li>
+        </ul>
+        <p>Замените имя, подпись и ссылки на свои. Ненужный контакт удалите вместе с <code>&lt;li&gt;…&lt;/li&gt;</code>, недостающий — добавьте по образцу.</p>
+      </section>
+
+      <section class="step" id="step-7">
+        <h3><span class="step-no">Шаг 7</span>Таймлайн</h3>
+        <p>Замените комментарий <code>&lt;!-- ШАГ 7: таймлайн --&gt;</code>:</p>
+        <div class="code" data-snippet="html-timeline" data-file="index.html" data-where="вместо &lt;!-- ШАГ 7: таймлайн --&gt;"></div>
+        <p>Каждая запись — это <code>&lt;article class="timeline-item"&gt;</code> с датой, названием и описанием. Записи бывают двух видов:</p>
+        <ul>
+          <li><b>С карточкой.</b> Всё содержимое обёрнуто в ссылку <code>&lt;a href="#project-coffee"&gt;</code>. Клик по записи прокрутит страницу к карточке с <code>id="project-coffee"</code> — её вы сделаете в следующем шаге.</li>
+          <li><b>Без карточки</b> — как хакатон и курс в примере. Просто текст, без <code>&lt;a&gt;</code>.</li>
+        </ul>
+        <p><code>&lt;span class="tag"&gt;</code> — необязательная метка рядом с названием: «Хакатон», «Курс», «В команде».</p>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Сначала вставьте пример как есть и убедитесь, что всё работает. Потом замените тексты на свои. Чтобы добавить запись, скопируйте любой <code>&lt;article&gt;…&lt;/article&gt;</code> целиком и вставьте рядом. Самые новые записи — сверху.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-8">
+        <h3><span class="step-no">Шаг 8</span>Карточки проектов</h3>
+        <p>Замените комментарий <code>&lt;!-- ШАГ 8: карточки проектов --&gt;</code>:</p>
+        <div class="code" data-snippet="html-cards" data-file="index.html" data-where="вместо &lt;!-- ШАГ 8: карточки проектов --&gt;"></div>
+        <p>У каждой карточки есть <code>id</code>, и он должен точно совпадать со ссылкой в таймлайне, только без решётки: в таймлайне <code>href="#project-cat"</code> — у карточки <code>id="project-cat"</code>. Придумывайте id латиницей, без пробелов: <code>project-</code> и короткое название.</p>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Сохраните файл и обновите страницу. Всё содержимое на месте, но выглядит как документ из 90-х: синие ссылки, огромные картинки. Это нормально — оформлением займёмся в части 3. Убедитесь, что фото и картинки проектов загрузились, а клик по записи в таймлайне прыгает к нужной карточке.</p>
+        </div>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Вместо картинки — значок «сломанного» изображения? Сравните путь в <code>src</code> с настоящим именем файла, буква в букву: <code>images/project-1.jpg</code> — не <code>image/</code>, не <code>.jpeg</code>, не <code>.png</code>.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 3 ============ -->
+    <section class="part" id="part-3">
+      <p class="part-no">Часть 3</p>
+      <h2>CSS — оформление</h2>
+      <p>CSS описывает, <em>как</em> выглядят элементы. Правило состоит из селектора — кого оформляем — и свойств — как именно:</p>
+      <div class="code short" data-snippet="demo-rule" data-lang="css" data-nocopy data-where="пример, копировать не нужно"></div>
+      <p>Точка перед именем выбирает элементы по классу (<code>class="tagline"</code>), решётка — по id, просто имя тега (<code>h1</code>) — все такие теги на странице. Весь код этой части вставляйте в <code>style.css</code>, каждый новый блок — <b>в конец файла</b>.</p>
+
+      <section class="step" id="step-9">
+        <h3><span class="step-no">Шаг 9</span>Цвета и основа</h3>
+        <div class="code" data-snippet="css-base" data-file="style.css" data-where="в пустой файл"></div>
+        <ul>
+          <li><b>Переменные в <code>:root</code>.</b> <code>--accent: #f5b83d</code> — это цвет, записанный один раз. Дальше в коде вместо него пишем <code>var(--accent)</code>. Захотите другой акцент — поменяете одну строку, и он сменится на всём сайте. Цвет записан в формате <code>#RRGGBB</code>; подобрать свой можно, набрав в поисковике «color picker».</li>
+          <li><b><code>*</code> выбирает все элементы.</b> Браузер сам добавляет отступы заголовкам, абзацам и спискам — мы их обнуляем и дальше расставляем сами. <code>box-sizing: border-box</code> — чтобы рамка и внутренние отступы входили в ширину элемента, а не прибавлялись к ней.</li>
+          <li><b><code>padding-top: 64px</code> у <code>body</code></b> — место под шапку, которую в следующем шаге закрепим сверху.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Фон стал тёмным, шрифт сменился, ссылки больше не синие и не подчёркнутые.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-10">
+        <h3><span class="step-no">Шаг 10</span>Шапка</h3>
+        <div class="code" data-snippet="css-header" data-file="style.css" data-where="в конец файла"></div>
+        <ul>
+          <li><code>position: fixed</code> закрепляет шапку: при прокрутке она остаётся на месте. <code>top: 0</code> и <code>left: 0</code> — в левом верхнем углу окна, <code>z-index</code> — поверх остального.</li>
+          <li><code>display: flex</code> выстраивает содержимое в ряд, <code>justify-content</code> и <code>align-items</code> центрируют его по горизонтали и вертикали, <code>gap</code> — расстояние между пунктами меню.</li>
+          <li><code>rgba(20, 22, 31, 0.8)</code> — тот же цвет, что у фона страницы, но с прозрачностью 0.8. <code>backdrop-filter: blur</code> размывает то, что проезжает под шапкой. Если поменяете <code>--bg</code>, поменяйте и здесь: первые три числа — это тот же цвет в формате RGB.</li>
+          <li><code>scroll-margin-top</code> — отступ сверху при переходе по якорю, чтобы шапка не закрыла начало раздела.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Прокрутите страницу — шапка остаётся наверху, текст под ней слегка размыт. Клик по «Проекты» плавно прокручивает к разделу.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-11">
+        <h3><span class="step-no">Шаг 11</span>Две колонки и профиль</h3>
+        <div class="code" data-snippet="css-layout" data-file="style.css" data-where="в конец файла"></div>
+        <ul>
+          <li><code>display: flex</code> у <code>.about</code> ставит профиль и таймлайн рядом. <code>flex: 1</code> и <code>flex: 1.5</code> — пропорции: таймлайну достаётся в полтора раза больше места.</li>
+          <li><code>max-width: 1100px</code> и <code>margin: 0 auto</code> — на широком мониторе содержимое не растягивается во всю ширину и стоит по центру.</li>
+          <li>Круглое фото — это одинаковые ширина и высота плюс <code>border-radius: 50%</code>. <code>object-fit: cover</code> обрезает фото под круг, а не сплющивает его.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Профиль слева, таймлайн справа, фото круглое, с цветной рамкой.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-12">
+        <h3><span class="step-no">Шаг 12</span>Таймлайн</h3>
+        <div class="code" data-snippet="css-timeline" data-file="style.css" data-where="в конец файла"></div>
+        <p>Линия — это просто левая рамка блока <code>.timeline</code>. Кружки интереснее:</p>
+        <ul>
+          <li><code>::before</code> создаёт «виртуальный» элемент в начале каждой записи. Текста у него нет (<code>content: ''</code>), но есть размер, рамка и скругление — получается кружок.</li>
+          <li><code>position: relative</code> у записи делает её точкой отсчёта, а <code>position: absolute</code> у кружка позволяет поставить его в точное место относительно записи — даже за её левый край.</li>
+        </ul>
+
+        <figure class="diagram">
+          <div class="scroll">
+            <svg viewBox="0 0 580 200" role="img" aria-label="Схема: откуда берётся left: -41px">
+              <rect class="d-line" x="60" y="0" width="8" height="200"/>
+              <circle class="d-dot" cx="64" cy="72" r="26"/>
+              <rect class="d-date" x="196" y="40" width="120" height="14" rx="3"/>
+              <rect class="d-title" x="196" y="64" width="250" height="20" rx="3"/>
+              <rect class="d-text" x="196" y="94" width="210" height="12" rx="3"/>
+
+              <line class="d-guide" x1="196" y1="30" x2="196" y2="196"/>
+              <line class="d-guide" x1="32" y1="110" x2="32" y2="196"/>
+              <line class="d-guide" x1="64" y1="104" x2="64" y2="160"/>
+
+              <line class="d-dim" x1="68" y1="140" x2="196" y2="140"/>
+              <path class="d-dim" d="M76 134 L68 140 L76 146 M188 134 L196 140 L188 146"/>
+              <text class="d-label" x="208" y="145">padding-left: 32px</text>
+
+              <line class="d-dim" x1="32" y1="182" x2="196" y2="182"/>
+              <path class="d-dim" d="M40 176 L32 182 L40 188 M188 176 L196 182 L188 188"/>
+              <text class="d-label accent" x="208" y="187">left: −41px</text>
+
+              <text class="d-label" x="80" y="20">линия 2px</text>
+              <text class="d-label" x="340" y="52">начало текста записи</text>
+            </svg>
+          </div>
+          <figcaption>Масштаб увеличен в 4 раза. Середина линии — на 33px левее текста (32px отступа + половина линии толщиной 2px). Середина кружка шириной 16px — в 8px от его левого края. 33 + 8 = 41.</figcaption>
+        </figure>
+
+        <ul>
+          <li><code>:has(a:hover)</code> означает «запись, внутри которой ссылка под курсором». Так кружок заливается цветом при наведении — но только у записей с карточкой.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Слева от записей — линия с кружками, кружки ровно на линии. При наведении на запись с карточкой подсвечиваются название и кружок, у записей без карточки — ничего.</p>
+        </div>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Если кружок съехал — вы, скорее всего, поменяли толщину линии, отступ или размер кружка. Пересчитайте <code>left</code> по той же формуле: отступ + половина линии + половина кружка, со знаком минус.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-13">
+        <h3><span class="step-no">Шаг 13</span>Карточки проектов</h3>
+        <div class="code" data-snippet="css-cards" data-file="style.css" data-where="в конец файла"></div>
+        <ul>
+          <li>Карточка — тоже flex-контейнер: картинка слева, текст справа.</li>
+          <li><code>overflow: hidden</code> вместе с <code>border-radius</code> обрезают картинку по скруглённым углам карточки.</li>
+          <li>У картинки фиксированный размер 320 × 220, а <code>object-fit: cover</code> вписывает в него любую картинку без искажений — лишнее просто обрезается. <code>flex-shrink: 0</code> не даёт картинке сжиматься, если текста много.</li>
+          <li><code>scroll-margin-top: 88px</code> — при переходе из таймлайна карточка остановится чуть ниже шапки.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Карточки на отдельном фоне, картинки одного размера. Клик по записи в таймлайне плавно прокручивает к карточке, и она не прячется под шапкой.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-14">
+        <h3><span class="step-no">Шаг 14</span>Версия для телефона</h3>
+        <div class="code" data-snippet="css-mobile" data-file="style.css" data-where="в конец файла"></div>
+        <p><code>@media (max-width: 800px)</code> — правила внутри срабатывают, только когда окно уже 800 пикселей. Колонки встают друг под друга, а картинка в карточке — над текстом.</p>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Сузьте окно браузера — примерно на 800px колонки должны перестроиться. Точнее проверить так: нажмите <kbd>F12</kbd>, затем <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> (или значок телефона в панели разработчика) и выберите модель телефона в списке сверху. Ничего не должно вылезать за край, страница не должна прокручиваться вбок.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 4 ============ -->
+    <section class="part" id="part-4">
+      <p class="part-no">Часть 4</p>
+      <h2>Публикация на GitHub Pages</h2>
+      <p>GitHub — сайт для хранения кода. Проект там называется <b>репозиторием</b>: это папка с файлами и историей всех изменений. <b>GitHub Pages</b> — бесплатный хостинг от GitHub: он берёт файлы из репозитория и показывает их как сайт.</p>
+      <p class="muted">Интерфейс GitHub на английском, поэтому ниже названия кнопок даны так, как они написаны на сайте.</p>
+
+      <section class="step" id="step-15">
+        <h3><span class="step-no">Шаг 15</span>Зарегистрируйтесь на GitHub</h3>
+        <p>На <a href="https://github.com" target="_blank" rel="noopener">github.com</a> нажмите <span class="ui">Sign up</span> и следуйте подсказкам. Логин (<span class="ui">Username</span>) станет частью адреса сайта: логин <code>pixel-fox</code> → сайт <code>pixel-fox.github.io</code>. Выбирайте короткий, латиницей, строчными буквами — менять его потом неудобно.</p>
+      </section>
+
+      <section class="step" id="step-16">
+        <h3><span class="step-no">Шаг 16</span>Создайте репозиторий</h3>
+        <ol>
+          <li>Справа вверху нажмите <span class="ui">+</span> → <span class="ui">New repository</span>.</li>
+          <li>В поле <span class="ui">Repository name</span> введите <code>ваш-логин.github.io</code> — именно ваш логин, строчными буквами, с <code>.github.io</code> в конце. Например, <code>pixel-fox.github.io</code>.</li>
+          <li>Оставьте <span class="ui">Public</span>: на бесплатном тарифе GitHub Pages работает только с публичными репозиториями.</li>
+          <li>Нажмите <span class="ui">Create repository</span>.</li>
+        </ol>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Если имя репозитория не совпадает с логином — например, <code>portfolio</code> или с опечаткой, — сайт окажется по другому адресу или не откроется вовсе. Переименовать репозиторий можно в <span class="ui">Settings → General → Repository name</span>.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-17">
+        <h3><span class="step-no">Шаг 17</span>Загрузите файлы</h3>
+        <ol>
+          <li>На странице нового репозитория нажмите ссылку <span class="ui">uploading an existing file</span>. Если при создании вы добавили README и этой ссылки нет — нажмите <span class="ui">Add file → Upload files</span>.</li>
+          <li>Откройте папку <code>portfolio</code> в Проводнике, выделите <code>index.html</code>, <code>style.css</code> и папку <code>images</code> и перетащите их все вместе в окно браузера.</li>
+          <li>Дождитесь, пока загрузятся все файлы, и нажмите зелёную кнопку <span class="ui">Commit changes</span> внизу страницы.</li>
+        </ol>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Перетаскивайте <b>содержимое</b> папки <code>portfolio</code>, а не саму папку. Иначе на GitHub всё окажется внутри <code>portfolio/</code>, и GitHub Pages не найдёт <code>index.html</code>. Правильно — когда <code>index.html</code> видно сразу на главной странице репозитория. И ещё: через кнопку <span class="ui">choose your files</span> папку выбрать нельзя, папку <code>images</code> — только перетаскиванием.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-18">
+        <h3><span class="step-no">Шаг 18</span>Включите GitHub Pages</h3>
+        <ol>
+          <li>В репозитории откройте вкладку <span class="ui">Settings</span>, слева выберите <span class="ui">Pages</span>.</li>
+          <li>В разделе <span class="ui">Build and deployment</span>: <span class="ui">Source</span> — <span class="ui">Deploy from a branch</span>, <span class="ui">Branch</span> — <span class="ui">main</span> и папка <span class="ui">/ (root)</span>. Нажмите <span class="ui">Save</span>. Если всё уже выбрано так — ничего не меняйте.</li>
+          <li>Подождите 1–2 минуты и обновите страницу настроек. Сверху появится <span class="ui">Your site is live at…</span> со ссылкой. За публикацией можно следить во вкладке <span class="ui">Actions</span>.</li>
+          <li>Откройте <code>https://ваш-логин.github.io</code> — это ваш сайт. Ссылку можно отправить кому угодно.</li>
+        </ol>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>На опубликованном сайте видны все картинки, работают меню и переходы из таймлайна к карточкам. Откройте сайт и с телефона.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-19">
+        <h3><span class="step-no">Шаг 19</span>Как обновлять сайт</h3>
+        <p>Меняйте файлы на компьютере, как раньше, проверяйте в браузере, а потом:</p>
+        <ol>
+          <li>В репозитории нажмите <span class="ui">Add file → Upload files</span>.</li>
+          <li>Перетащите изменённые файлы — файлы с тем же именем заменятся.</li>
+          <li>Нажмите <span class="ui">Commit changes</span> — изменения отобразятся на сайте.</li>
+        </ol>
+        <p>Мелкую правку можно сделать прямо на GitHub: откройте файл, нажмите значок карандаша (<span class="ui">Edit</span>), исправьте и нажмите <span class="ui">Commit changes</span>. Только не забудьте потом внести ту же правку в файл на компьютере — иначе при следующей загрузке она пропадёт.</p>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Не видите изменений? Обновите страницу с <kbd>Ctrl</kbd>+<kbd>F5</kbd> — браузер не возьмёт старую версию из памяти. Иногда GitHub Pages обновляется до 10 минут.</p>
+        </div>
+      </section>
+
+      <section class="step" id="trouble">
+        <h3>Если что-то не работает</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Что видите</th><th>Что проверить</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>404: «There isn't a GitHub Pages site here»</td>
+                <td><ul>
+                  <li>Имя репозитория — точно логин + <code>.github.io</code>.</li>
+                  <li><code>index.html</code> лежит в корне репозитория, а не в папке.</li>
+                  <li>Файл называется <code>index.html</code>, строчными буквами.</li>
+                  <li>После загрузки прошло хотя бы 2–3 минуты.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Сайт без оформления, просто текст</td>
+                <td><ul>
+                  <li>Файл называется <code>style.css</code>, лежит рядом с <code>index.html</code> и загружен на GitHub.</li>
+                  <li>В <code>&lt;head&gt;</code> есть <code>&lt;link rel="stylesheet" href="style.css"&gt;</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>У вас картинки есть, а на опубликованном сайте — нет</td>
+                <td><ul>
+                  <li>Регистр букв и расширение совпадают: <code>Project-1.JPG</code> и <code>project-1.jpg</code> для GitHub — разные файлы.</li>
+                  <li>Папка <code>images</code> загружена на GitHub.</li>
+                  <li>В пути прямой слеш <code>/</code>, а не обратный <code>\</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Клик по записи в таймлайне никуда не ведёт</td>
+                <td><ul>
+                  <li><code>id</code> карточки совпадает с <code>href</code> записи без <code>#</code>.</li>
+                  <li>В <code>id</code> нет пробелов и русских букв, и он не повторяется на странице.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>«Кракозябры» вместо русских букв</td>
+                <td><ul>
+                  <li>В <code>&lt;head&gt;</code> есть <code>&lt;meta charset="UTF-8"&gt;</code>.</li>
+                  <li>Файл сохранён в UTF-8 — это видно справа внизу в VS Code.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Вёрстка «поехала» после правки</td>
+                <td><ul>
+                  <li>Не потерялась ли закрывающая <code>}</code> в CSS или закрывающий тег в HTML. VS Code подсвечивает парные скобки и теги.</li>
+                  <li>Сравните свой код с <a href="#full">полным кодом</a> в конце инструкции.</li>
+                </ul></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 5 ============ -->
+    <section class="part" id="part-5">
+      <p class="part-no">Часть 5</p>
+      <h2>Сдача</h2>
+
+      <section class="step" id="step-20">
+        <h3><span class="step-no">Шаг 20</span>Сохраните версию v1</h3>
+        <p>Этот сайт понадобится в следующем задании. Сохраните его текущее состояние как отдельную версию — к ней всегда можно будет вернуться:</p>
+        <ol>
+          <li>На главной странице репозитория справа найдите блок <span class="ui">Releases</span> и нажмите <span class="ui">Create a new release</span>.</li>
+          <li>В поле выбора тега (<span class="ui">Choose a tag</span>) введите <code>v1</code> и выберите <span class="ui">Create new tag: v1 on publish</span>.</li>
+          <li>В <span class="ui">Release title</span> напишите «Версия 1» и нажмите <span class="ui">Publish release</span>.</li>
+        </ol>
+      </section>
+
+      <section class="step" id="checklist">
+        <h3>Самопроверка</h3>
+        <p class="progress" id="progress" aria-live="polite">Отмечено <b>0</b> из 10</p>
+        <ul class="checklist">
+          <li><label><input type="checkbox" id="chk-live"><span>Сайт открывается по адресу <code>https://ваш-логин.github.io</code></span></label></li>
+          <li><label><input type="checkbox" id="chk-menu"><span>Пункты меню «Обо мне» и «Проекты» работают, шапка не уезжает при прокрутке</span></label></li>
+          <li><label><input type="checkbox" id="chk-profile"><span>Есть фото, имя, подпись и минимум две ссылки для связи</span></label></li>
+          <li><label><input type="checkbox" id="chk-timeline"><span>В таймлайне 6 или больше записей, новые сверху; у каждой — дата, название и описание</span></label></li>
+          <li><label><input type="checkbox" id="chk-cards"><span>4 или больше карточки проектов, у каждой — картинка и описание</span></label></li>
+          <li><label><input type="checkbox" id="chk-anchors"><span>Клик по записи с карточкой ведёт к нужной карточке, записи без карточки не кликаются</span></label></li>
+          <li><label><input type="checkbox" id="chk-images"><span>На опубликованном сайте загружаются все картинки</span></label></li>
+          <li><label><input type="checkbox" id="chk-mobile"><span>На телефоне колонки друг под другом, ничего не вылезает за край экрана</span></label></li>
+          <li><label><input type="checkbox" id="chk-texts"><span>Тексты примера заменены на ваши: нигде нет «Имя Фамилия», <code>username</code> и <code>example.com</code></span></label></li>
+          <li><label><input type="checkbox" id="chk-release"><span>Создан релиз <code>v1</code></span></label></li>
+        </ul>
+
+        <div class="send">
+          <p><b>Отправьте преподавателю две ссылки:</b></p>
+          <ul>
+            <li>на сайт — <code>https://ваш-логин.github.io</code>;</li>
+            <li>на репозиторий — <code>https://github.com/ваш-логин/ваш-логин.github.io</code>.</li>
+          </ul>
+        </div>
+
+        <h4>Если хочется большего</h4>
+        <ul>
+          <li>Иконка сайта во вкладке браузера: положите картинку в <code>images</code> и добавьте в <code>&lt;head&gt;</code> строку <code>&lt;link rel="icon" href="images/icon.png"&gt;</code>.</li>
+          <li>Иконки рядом с контактами — например, с <a href="https://simpleicons.org" target="_blank" rel="noopener">simpleicons.org</a>.</li>
+          <li>Свои цвета и шрифт: поменяйте переменные в <code>:root</code>, а шрифт подберите на <a href="https://fonts.google.com" target="_blank" rel="noopener">fonts.google.com</a> — с поддержкой кириллицы.</li>
+          <li>Плавная подсветка при наведении: свойство <code>transition</code>.</li>
+          <li>Раздел «Навыки» или пара абзацев о себе.</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- ============ ПОЛНЫЙ КОД ============ -->
+    <section class="part" id="full">
+      <p class="part-no">Приложение</p>
+      <h2>Полный код</h2>
+      <p>Так выглядят файлы после всех шагов — если что-то пошло не так, сверьтесь с ними. Это тот же код, что в примере в начале страницы.</p>
+      <div class="code" data-snippet="full-html" data-file="index.html" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="full-css" data-file="style.css" data-where="итоговый файл"></div>
+      <p class="foot">Отметки самопроверки сохраняются только в этом браузере.</p>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= ФРАГМЕНТЫ КОДА ================= -->
+
+<script type="text/plain" data-snippet="demo-tree">
+portfolio/
+├── images/
+│   ├── avatar.jpg
+│   ├── project-1.jpg
+│   ├── project-2.jpg
+│   ├── project-3.jpg
+│   └── project-4.jpg
+├── index.html
+└── style.css
+</script>
+
+<script type="text/plain" data-snippet="demo-tags">
+<h1>Заголовок</h1>
+<a href="https://github.com">Ссылка на GitHub</a>
+<img src="images/avatar.jpg" alt="Моё фото">
+</script>
+
+<script type="text/plain" data-snippet="demo-rule">
+.tagline {            /* селектор: элементы с class="tagline" */
+    color: gray;      /* свойство: значение; */
+    font-size: 20px;
+}
+</script>
+
+<script type="text/plain" data-snippet="html-skeleton">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Имя Фамилия — портфолио</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ШАГ 5: шапка -->
+
+    <main>
+        <section id="about" class="about">
+            <!-- ШАГ 6: профиль -->
+
+            <!-- ШАГ 7: таймлайн -->
+        </section>
+
+        <section id="projects" class="projects">
+            <h2>Проекты</h2>
+
+            <!-- ШАГ 8: карточки проектов -->
+        </section>
+    </main>
+
+</body>
+</html>
+</script>
+
+<script type="text/plain" data-snippet="html-header">
+<header class="top-bar">
+    <nav>
+        <a href="#about">Обо мне</a>
+        <a href="#projects">Проекты</a>
+    </nav>
+</header>
+</script>
+
+<script type="text/plain" data-snippet="html-profile">
+<div class="profile">
+    <img src="images/avatar.jpg" alt="Фото: Имя Фамилия" class="avatar">
+    <h1>Имя Фамилия</h1>
+    <p class="tagline">Изучаю веб-разработку и дизайн</p>
+
+    <h2>Контакты</h2>
+    <ul class="contacts">
+        <li><a href="mailto:name@example.com">name@example.com</a></li>
+        <li><a href="https://t.me/username" target="_blank">Telegram</a></li>
+        <li><a href="https://github.com/username" target="_blank">GitHub</a></li>
+    </ul>
+</div>
+</script>
+
+<script type="text/plain" data-snippet="html-timeline">
+<div class="timeline-block">
+    <h2>Мой путь</h2>
+
+    <div class="timeline">
+
+        <article class="timeline-item">
+            <a href="#project-portfolio">
+                <div class="date">Сентябрь 2026</div>
+                <h3>Сайт-портфолио</h3>
+                <p>Первый сайт на HTML и CSS, опубликован на GitHub Pages</p>
+            </a>
+        </article>
+
+        <article class="timeline-item">
+            <a href="#project-coffee">
+                <div class="date">Май 2026</div>
+                <h3>Лендинг для кофейни</h3>
+                <p>Учебный проект: макет в Figma и вёрстка</p>
+            </a>
+        </article>
+
+        <article class="timeline-item">
+            <div class="date">Март 2026</div>
+            <h3>Трекер привычек <span class="tag">Хакатон</span></h3>
+            <p>Дизайн интерфейса в команде из 4 человек за 48 часов</p>
+        </article>
+
+        <article class="timeline-item">
+            <a href="#project-cat">
+                <div class="date">Январь 2026</div>
+                <h3>Игра «Кот в лабиринте»</h3>
+                <p>Игра на Scratch: 10 уровней и таблица рекордов</p>
+            </a>
+        </article>
+
+        <article class="timeline-item">
+            <div class="date">Октябрь 2025</div>
+            <h3>Курс «Основы HTML и CSS»</h3>
+            <p>Онлайн-курс: 24 урока и итоговый проект</p>
+        </article>
+
+        <article class="timeline-item">
+            <a href="#project-photo">
+                <div class="date">Лето 2025</div>
+                <h3>Фотопроект «Город после дождя»</h3>
+                <p>Серия из 12 фотографий</p>
+            </a>
+        </article>
+
+    </div>
+</div>
+</script>
+
+<script type="text/plain" data-snippet="html-cards">
+<article class="card" id="project-portfolio">
+    <img src="images/project-1.jpg" alt="Скриншот сайта-портфолио">
+    <div class="card-body">
+        <h3>Сайт-портфолио</h3>
+        <p>Этот сайт: вёрстка на HTML и CSS, таймлайн, версия для телефона и публикация на GitHub Pages.</p>
+        <div class="card-links">
+            <a href="https://github.com/username/username.github.io" target="_blank">Код на GitHub</a>
+        </div>
+    </div>
+</article>
+
+<article class="card" id="project-coffee">
+    <img src="images/project-2.jpg" alt="Главный экран лендинга кофейни">
+    <div class="card-body">
+        <h3>Лендинг для кофейни</h3>
+        <p>Одностраничный сайт с меню, фотографиями зала и формой бронирования столика.</p>
+        <div class="card-links">
+            <a href="https://example.com" target="_blank">Открыть сайт</a>
+            <a href="https://example.com" target="_blank">Макет в Figma</a>
+        </div>
+    </div>
+</article>
+
+<article class="card" id="project-cat">
+    <img src="images/project-3.jpg" alt="Уровень из игры «Кот в лабиринте»">
+    <div class="card-body">
+        <h3>Игра «Кот в лабиринте»</h3>
+        <p>Кот ищет выход из лабиринта и собирает рыбок. Десять уровней, таймер и таблица рекордов.</p>
+        <div class="card-links">
+            <a href="https://example.com" target="_blank">Играть на Scratch</a>
+        </div>
+    </div>
+</article>
+
+<article class="card" id="project-photo">
+    <img src="images/project-4.jpg" alt="Фотография из серии «Город после дождя»">
+    <div class="card-body">
+        <h3>Фотопроект «Город после дождя»</h3>
+        <p>Серия из 12 фотографий: отражения в лужах, мокрый асфальт и вечерние огни.</p>
+        <div class="card-links">
+            <a href="https://example.com" target="_blank">Смотреть все фото</a>
+        </div>
+    </div>
+</article>
+</script>
+
+<script type="text/plain" data-snippet="css-base">
+/* ---------- Цвета и основа ---------- */
+
+/* Цвета сайта: поменяйте здесь — и они сменятся везде */
+:root {
+    --bg: #14161f;      /* фон страницы */
+    --card: #1e2230;    /* фон карточек */
+    --text: #eef0f6;    /* основной текст */
+    --muted: #9aa1b5;   /* второстепенный текст */
+    --accent: #f5b83d;  /* акцент: даты, кружки, ссылки */
+    --line: #2e3345;    /* линии и рамки */
+}
+
+/* Убираем отступы, которые браузер добавляет сам */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* плавная прокрутка к якорям */
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-top: 64px; /* место под шапку */
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+</script>
+
+<script type="text/plain" data-snippet="css-header">
+/* ---------- Шапка ---------- */
+
+.top-bar {
+    position: fixed; /* шапка не уезжает при прокрутке */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(20, 22, 31, 0.8); /* цвет фона, но полупрозрачный */
+    backdrop-filter: blur(10px);             /* размываем то, что под шапкой */
+    border-bottom: 1px solid var(--line);
+    z-index: 10; /* шапка поверх всего остального */
+}
+
+.top-bar nav {
+    display: flex;
+    gap: 32px;
+}
+
+.top-bar a {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.top-bar a:hover {
+    color: var(--accent);
+}
+
+/* Чтобы шапка не закрывала начало раздела после перехода по меню */
+.about,
+.projects {
+    scroll-margin-top: 64px;
+}
+</script>
+
+<script type="text/plain" data-snippet="css-layout">
+/* ---------- Две колонки и профиль ---------- */
+
+.about {
+    display: flex;
+    gap: 64px;
+    max-width: 1100px;
+    margin: 0 auto;  /* по центру страницы */
+    padding: 48px 24px;
+}
+
+.profile {
+    flex: 1;         /* левая колонка: 1 часть ширины */
+}
+
+.timeline-block {
+    flex: 1.5;       /* правая колонка: 1,5 части */
+}
+
+.avatar {
+    display: block;
+    width: 160px;
+    height: 160px;
+    object-fit: cover;   /* фото заполняет круг без искажений */
+    border-radius: 50%;  /* квадрат превращается в круг */
+    border: 4px solid var(--accent);
+    margin-bottom: 24px;
+}
+
+h1 {
+    font-size: 40px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.tagline {
+    font-size: 20px;
+    color: var(--muted);
+    margin-bottom: 32px;
+}
+
+.profile h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+.contacts {
+    list-style: none;    /* убираем точки у списка */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contacts a {
+    font-weight: 500;
+}
+
+.contacts a:hover {
+    color: var(--accent);
+}
+</script>
+
+<script type="text/plain" data-snippet="css-timeline">
+/* ---------- Таймлайн ---------- */
+
+.timeline-block h2 {
+    font-size: 24px;
+    padding-bottom: 8px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--line);
+}
+
+/* Вертикальная линия — это левая рамка блока */
+.timeline {
+    border-left: 2px solid var(--line);
+    padding-left: 32px;
+}
+
+.timeline-item {
+    position: relative;  /* точка отсчёта для кружка */
+    margin-bottom: 40px;
+}
+
+/* Кружок на линии */
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: -41px;         /* 32 (отступ) + 1 (половина линии) + 8 (половина кружка) */
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--bg);
+    border: 3px solid var(--accent);
+}
+
+.date {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.timeline-item h3 {
+    font-size: 20px;
+    margin: 2px 0 4px;
+}
+
+.timeline-item p {
+    color: var(--muted);
+}
+
+/* Маленькая метка рядом с названием */
+.tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+/* Записи со ссылкой на карточку */
+.timeline-item a {
+    display: block;
+}
+
+.timeline-item a:hover h3 {
+    color: var(--accent);
+}
+
+/* «Запись, внутри которой ссылка под курсором» — заливаем кружок */
+.timeline-item:has(a:hover)::before {
+    background-color: var(--accent);
+}
+</script>
+
+<script type="text/plain" data-snippet="css-cards">
+/* ---------- Карточки проектов ---------- */
+
+.projects {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    border-top: 1px solid var(--line);
+}
+
+.projects h2 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Карточка: картинка слева, текст справа */
+.card {
+    display: flex;
+    background-color: var(--card);
+    border-radius: 16px;
+    overflow: hidden;          /* обрезаем углы картинки по скруглению */
+    margin-bottom: 32px;
+    scroll-margin-top: 88px;   /* отступ под шапку при переходе из таймлайна */
+}
+
+.card img {
+    width: 320px;
+    height: 220px;
+    object-fit: cover;
+    flex-shrink: 0;            /* картинка не сжимается, даже если текста много */
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.card-body h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.card-body p {
+    color: var(--muted);
+    margin-bottom: 16px;
+}
+
+.card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card-links a {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.card-links a:hover {
+    text-decoration: underline;
+}
+</script>
+
+<script type="text/plain" data-snippet="css-mobile">
+/* ---------- Версия для телефона ---------- */
+
+/* Правила внутри работают, только если окно уже 800px */
+@media (max-width: 800px) {
+    .about {
+        flex-direction: column;  /* колонки друг под другом */
+        gap: 48px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .card {
+        flex-direction: column;  /* картинка над текстом */
+    }
+
+    .card img {
+        width: 100%;
+        height: 200px;
+    }
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+(function () {
+  // ---- собрать фрагменты ----
+  var S = {};
+  document.querySelectorAll('script[type="text/plain"][data-snippet]').forEach(function (el) {
+    S[el.dataset.snippet] = el.textContent.replace(/^\r?\n/, '').replace(/\s+$/, '');
+  });
+
+  // Итоговые файлы собираются из тех же фрагментов, что и шаги
+  var MARK = /^(\s*)\x3C!-- ШАГ (\d+): .*--\x3E\s*$/;
+  var STEP = { '5': 'html-header', '6': 'html-profile', '7': 'html-timeline', '8': 'html-cards' };
+  S['full-html'] = S['html-skeleton'].split('\n').map(function (line) {
+    var m = line.match(MARK);
+    if (!m || !STEP[m[2]]) return line;
+    return S[STEP[m[2]]].split('\n').map(function (l) { return l ? m[1] + l : l; }).join('\n');
+  }).join('\n');
+  S['full-css'] = ['css-base', 'css-header', 'css-layout', 'css-timeline', 'css-cards', 'css-mobile']
+    .map(function (k) { return S[k]; }).join('\n\n');
+
+  // ---- блоки кода ----
+  function copyText(text, btn, pre) {
+    function done(ok) {
+      btn.textContent = ok ? 'Скопировано' : 'Выделено — нажмите Ctrl+C';
+      btn.classList.toggle('done', ok);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function () { btn.textContent = 'Копировать'; btn.classList.remove('done'); }, 2000);
+    }
+    function fallback() {
+      var r = document.createRange();
+      r.selectNodeContents(pre);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      done(false);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+    } catch (e) { fallback(); }
+  }
+
+  document.querySelectorAll('.code[data-snippet]').forEach(function (host) {
+    var key = host.dataset.snippet;
+    var text = S[key] || '';
+    var lang = host.dataset.lang || (key.indexOf('css') !== -1 ? 'css' : 'html');
+
+    var bar = document.createElement('div');
+    bar.className = 'code-bar';
+    if (host.dataset.file) {
+      var f = document.createElement('span');
+      f.className = 'code-file';
+      f.textContent = host.dataset.file;
+      bar.appendChild(f);
+    }
+    if (host.dataset.where) {
+      var w = document.createElement('span');
+      w.className = 'code-where';
+      var where = host.dataset.where;
+      var cm = where.match(/^(вместо )(.+)$/);
+      if (cm) {
+        w.appendChild(document.createTextNode(cm[1]));
+        var b = document.createElement('b');
+        b.textContent = cm[2];
+        w.appendChild(b);
+      } else {
+        w.textContent = where;
+      }
+      bar.appendChild(w);
+    }
+
+    var pre = document.createElement('pre');
+    var code = document.createElement('code');
+    code.className = 'language-' + (lang === 'html' ? 'xml' : lang === 'plain' ? 'plaintext' : lang);
+    code.textContent = text;
+    pre.appendChild(code);
+
+    if (!('nocopy' in host.dataset)) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy';
+      btn.textContent = 'Копировать';
+      btn.addEventListener('click', function () { copyText(text, btn, pre); });
+      bar.appendChild(btn);
+    }
+    if (bar.childNodes.length) host.appendChild(bar);
+    host.appendChild(pre);
+
+    if (window.hljs && lang !== 'plain') {
+      try { window.hljs.highlightElement(code); } catch (e) {}
+    }
+  });
+
+  // ---- живой пример ----
+  function placeholder(label, hueA, hueB, w, h) {
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0" stop-color="hsl(' + hueA + ',55%,58%)"/><stop offset="1" stop-color="hsl(' + hueB + ',50%,28%)"/>' +
+      '</linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/>' +
+      '<text x="50%" y="50%" fill="rgba(255,255,255,0.88)" font-family="Consolas, monospace" font-size="' + Math.round(h / 10) +
+      '" text-anchor="middle" dominant-baseline="middle">' + label + '</text></svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+  var IMG = {
+    'avatar.jpg': placeholder('avatar.jpg', 38, 12, 400, 400),
+    'project-1.jpg': placeholder('project-1.jpg', 222, 250, 1280, 720),
+    'project-2.jpg': placeholder('project-2.jpg', 28, 355, 1280, 720),
+    'project-3.jpg': placeholder('project-3.jpg', 150, 195, 1280, 720),
+    'project-4.jpg': placeholder('project-4.jpg', 265, 300, 1280, 720)
+  };
+  // Внутри примера ссылки-якоря прокручивают страницу, остальные ссылки отключены
+  var clickScript = '\x3Cscript>document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;e.preventDefault();' +
+    'var h=a.getAttribute("href")||"";if(h.charAt(0)==="#"){var t=document.getElementById(h.slice(1));if(t)t.scrollIntoView({behavior:"smooth"});}});\x3C/script>';
+
+  var doc = S['full-html']
+    .replace('<link rel="stylesheet" href="style.css">', '<style>\n' + S['full-css'] + '\n</style>')
+    .replace(/src="images\/([^"]+)"/g, function (m, name) { return 'src="' + (IMG[name] || '') + '"'; })
+    .replace('</body>', clickScript + '\n</body>');
+
+  var frame = document.getElementById('pv-frame');
+  var stage = document.getElementById('pv-stage');
+  var win = document.getElementById('pv-window');
+  var screen = document.getElementById('pv-screen');
+  var btnDesk = document.getElementById('pv-desktop');
+  var btnPhone = document.getElementById('pv-phone');
+  frame.srcdoc = doc;
+
+  var SIZES = { desktop: [1200, 760], phone: [390, 720] };
+  var mode = 'desktop';
+  function fit() {
+    var size = SIZES[mode];
+    var inner = stage.clientWidth - 32 - (mode === 'phone' ? 12 : 0);
+    var s = Math.min(1, inner / size[0]);
+    frame.style.width = size[0] + 'px';
+    frame.style.height = size[1] + 'px';
+    frame.style.transform = 'scale(' + s + ')';
+    screen.style.width = Math.floor(size[0] * s) + 'px';
+    screen.style.height = Math.floor(size[1] * s) + 'px';
+  }
+  function setMode(m) {
+    mode = m;
+    win.classList.toggle('phone', m === 'phone');
+    btnDesk.setAttribute('aria-pressed', String(m === 'desktop'));
+    btnPhone.setAttribute('aria-pressed', String(m === 'phone'));
+    fit();
+  }
+  btnDesk.addEventListener('click', function () { setMode('desktop'); });
+  btnPhone.addEventListener('click', function () { setMode('phone'); });
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+  window.addEventListener('resize', fit);
+  fit();
+
+  // ---- самопроверка ----
+  var KEY = 'portfolio-task1-checklist';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var boxes = document.querySelectorAll('.checklist input');
+  var progress = document.getElementById('progress');
+  function update() {
+    var n = 0;
+    boxes.forEach(function (b) { if (b.checked) n++; });
+    progress.innerHTML = 'Отмечено <b>' + n + '</b> из ' + boxes.length;
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.id];
+    b.addEventListener('change', function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+      update();
+    });
+  });
+  update();
+})();
+</script>

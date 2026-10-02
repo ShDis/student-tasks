@@ -1,0 +1,1633 @@
+<title>Портфолио на React</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@500;600&display=swap">
+<style>
+/*@include task2-style*/
+
+  /* ---------- component tree ---------- */
+  .map {
+    margin: 20px 0;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    display: grid;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .map-box {
+    border: 1.5px dashed var(--rule-strong);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+  .map-box.solid { border-style: solid; background: var(--ground); }
+  .map-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+  .map-sel { font-family: var(--f-mono); font-size: 13px; font-weight: 700; color: var(--ink); overflow-wrap: anywhere; }
+  .map-step { font-family: var(--f-mono); font-size: 12px; color: var(--accent); white-space: nowrap; }
+  .map-what { color: var(--ink-2); margin: 0; }
+  .map-cols { display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px; }
+  @media (max-width: 520px) { .map-cols { grid-template-columns: 1fr; } }
+  .map figcaption { font-size: 14px; color: var(--ink-2); padding: 2px 2px 0; }
+  .code-file.terminal { color: #9fe0a8; }
+  .code.wrong .code-bar { background: #3a1f1a; }
+  .code.right .code-bar { background: #173226; }
+</style>
+
+<div class="layout">
+
+  <header class="intro">
+    <p class="eyebrow">Задание 3 · пошаговая инструкция</p>
+    <h1>Портфолио на&nbsp;React</h1>
+    <p class="lede">Вы переделаете свой сайт на React — библиотеке, на которой сделана большая часть современных сайтов и приложений. Сайт будет выглядеть и работать как раньше, но код станет набором компонентов, фильтр будет запоминать выбор, а публиковать сайт будет GitHub Actions — автоматически после каждого изменения.</p>
+
+    <section class="preview" aria-label="Пример готового сайта">
+      <div class="pv-toolbar">
+        <p class="pv-title">Что получится</p>
+        <div class="seg" role="group" aria-label="Размер экрана">
+          <button type="button" id="pv-desktop" aria-pressed="true">Компьютер</button>
+          <button type="button" id="pv-phone" aria-pressed="false">Телефон</button>
+        </div>
+      </div>
+      <div class="pv-stage" id="pv-stage">
+        <div class="pv-window" id="pv-window">
+          <div class="pv-bar"><span class="pv-dots"><i></i><i></i><i></i></span><span class="pv-url">https://ваш-логин.github.io</span></div>
+          <div class="pv-screen" id="pv-screen">
+            <iframe id="pv-frame" title="Пример сайта-портфолио на React"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+    <p class="pv-caption">Это настоящая сборка сайта из этого задания. Фильтры работают как в задании 2, а на вашем сайте выбранный фильтр ещё и сохранится после перезагрузки страницы. Цветные прямоугольники — заглушки на месте ваших картинок. Весь код — <a href="#full">в конце инструкции</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Содержание">
+    <p class="toc-title">Содержание</p>
+    <ol>
+      <li><a href="#before">Перед началом</a></li>
+      <li><a href="#part-1">1. Инструменты</a>
+        <ol>
+          <li><a href="#step-1"><span>1</span>Node.js</a></li>
+          <li><a href="#step-2"><span>2</span>Ветка react</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-2">2. Проект на Vite</a>
+        <ol>
+          <li><a href="#step-3"><span>3</span>Новое место для файлов</a></li>
+          <li><a href="#step-4"><span>4</span>Файлы проекта</a></li>
+          <li><a href="#step-5"><span>5</span>Установка и запуск</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-3">3. Компоненты и JSX</a>
+        <ol>
+          <li><a href="#step-6"><span>6</span>Первый компонент</a></li>
+          <li><a href="#step-7"><span>7</span>Профиль</a></li>
+          <li><a href="#step-8"><span>8</span>Каркас страницы</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-4">4. Данные и props</a>
+        <ol>
+          <li><a href="#step-9"><span>9</span>projects.js</a></li>
+          <li><a href="#step-10"><span>10</span>Запись таймлайна</a></li>
+          <li><a href="#step-11"><span>11</span>Таймлайн: map и key</a></li>
+          <li><a href="#step-12"><span>12</span>Карточки проектов</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-5">5. Состояние: useState</a>
+        <ol>
+          <li><a href="#step-13"><span>13</span>Кнопки фильтров</a></li>
+          <li><a href="#step-14"><span>14</span>useState</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-6">6. Эффекты: useEffect</a>
+        <ol>
+          <li><a href="#step-15"><span>15</span>Запомнить фильтр</a></li>
+          <li><a href="#step-16"><span>16</span>Когда эффект не нужен</a></li>
+          <li><a href="#step-17"><span>17</span>По желанию: картинка во весь экран</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-7">7. Публикация</a>
+        <ol>
+          <li><a href="#step-18"><span>18</span>Сборка</a></li>
+          <li><a href="#step-19"><span>19</span>Файл публикации</a></li>
+          <li><a href="#step-20"><span>20</span>Настройка Pages</a></li>
+          <li><a href="#step-21"><span>21</span>Слияние веток</a></li>
+          <li><a href="#trouble"><span>?</span>Если не работает</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-8">8. Сдача</a>
+        <ol>
+          <li><a href="#step-22"><span>22</span>Версия v3</a></li>
+          <li><a href="#checklist"><span>✓</span>Самопроверка</a></li>
+        </ol>
+      </li>
+      <li><a href="#full">Полный код</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============ ПЕРЕД НАЧАЛОМ ============ -->
+    <section class="part" id="before">
+      <h2>Перед началом</h2>
+
+      <h4>Что должно получиться</h4>
+      <ul class="reqs">
+        <li>Сайт выглядит и работает так же, как после задания 2: меню, таймлайн с фильтрами, карточки, версия для телефона.</li>
+        <li>Сайт сделан на React: страница собрана из компонентов в папке <code>src/components</code> — не меньше пяти.</li>
+        <li>Выбранный фильтр запоминается: после перезагрузки страницы он остаётся выбранным.</li>
+        <li>Чтобы добавить проект, достаточно добавить запись в <code>src/projects.js</code>.</li>
+        <li>В коде нет <code>querySelector</code>, <code>classList</code> и <code>innerHTML</code> — страницу обновляет React.</li>
+        <li>Сайт публикуется через GitHub Actions, создан релиз <code>v3</code>.</li>
+      </ul>
+
+      <h4>Что понадобится</h4>
+      <ul>
+        <li>Готовое <a href="https://shdis.github.io/student-tasks/portfolio-2/" target="_blank" rel="noopener">задание 2</a>: сайт с фильтрами, файл <code>data.js</code> и релиз <code>v2</code>.</li>
+        <li>VS Code, GitHub Desktop и браузер.</li>
+      </ul>
+
+      <h4>Что такое React</h4>
+      <p>В задании 2 вы сами писали <code>renderTimeline</code>: брали данные, превращали их в HTML, вставляли на страницу — и вызывали её заново после каждого клика. React делает то же самое, но за вас. Вы описываете, <em>как</em> выглядит страница при текущих данных, а когда данные меняются, React сам обновляет нужную часть.</p>
+      <p>Страница в React собирается из <b>компонентов</b> — функций, которые возвращают разметку. Шапка, профиль, запись таймлайна, карточка — у каждого компонента свой файл.</p>
+      <p>Код копируйте кнопкой <b>Копировать</b> — над каждым блоком написано, в какой файл его вставить. Если написано «весь файл» — замените всё содержимое файла.</p>
+    </section>
+
+    <!-- ============ ЧАСТЬ 1 ============ -->
+    <section class="part" id="part-1">
+      <p class="part-no">Часть 1</p>
+      <h2>Инструменты</h2>
+
+      <section class="step" id="step-1">
+        <h3><span class="step-no">Шаг 1</span>Установите Node.js</h3>
+        <p>React-проекты собираются специальными программами, и для них нужен <b>Node.js</b> — среда, которая запускает JavaScript на компьютере, а не в браузере. Вместе с ним ставится <b>npm</b> — программа, которая скачивает React и другие библиотеки.</p>
+        <ol>
+          <li>Скачайте с <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> версию <b>LTS</b> (для Windows — <span class="ui">Windows Installer (.msi)</span>) и установите с настройками по умолчанию.</li>
+          <li>Откройте папку сайта в VS Code — из GitHub Desktop кнопкой <span class="ui">Open in Visual Studio Code</span>.</li>
+          <li>Откройте терминал: <span class="ui">Terminal → New Terminal</span> (<kbd>Ctrl</kbd>+<kbd>`</kbd>). Внизу появится панель для текстовых команд.</li>
+          <li>Введите по очереди две команды, после каждой — <kbd>Enter</kbd>:
+            <div class="code short" data-snippet="term-versions" data-lang="plain" data-file="Терминал" data-terminal data-where="в терминал VS Code"></div>
+            Должны появиться номера версий, например <code>v24.19.0</code> и <code>11.17.0</code>.
+          </li>
+        </ol>
+        <p><b>Терминал</b> — окно для текстовых команд: набрали команду, нажали <kbd>Enter</kbd>. Текст слева от курсора показывает, в какой папке вы находитесь, — он должен заканчиваться на <code>ваш-логин.github.io</code>.</p>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p><code>'npm' не является внутренней или внешней командой</code> (или <code>is not recognized</code>) — VS Code ещё не знает про Node.js. Закройте VS Code полностью и откройте снова.</p>
+        </div>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p><code>npm.ps1 cannot be loaded… running scripts is disabled</code> — Windows не даёт запускать скрипты в PowerShell. Переключите терминал VS Code на обычную командную строку: в панели терминала нажмите стрелку рядом с <span class="ui">+</span> → <span class="ui">Select Default Profile</span> → <span class="ui">Command Prompt</span>. Потом закройте терминал (значок корзины) и откройте новый.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-2">
+        <h3><span class="step-no">Шаг 2</span>Создайте ветку react</h3>
+        <p>Пока вы переделываете сайт, он не должен ломаться. Для этого в Git есть <b>ветки</b> — параллельные версии проекта. Сайт показывает ветку <code>main</code>, а вы будете работать в ветке <code>react</code>. Когда всё будет готово, вы объедините ветки, и новая версия появится на сайте.</p>
+        <ol>
+          <li>В GitHub Desktop нажмите <span class="ui">Current Branch</span> вверху окна → <span class="ui">New Branch</span>.</li>
+          <li>Введите имя <code>react</code> и нажмите <span class="ui">Create Branch</span>.</li>
+          <li>Нажмите <span class="ui">Publish branch</span> — ветка появится на GitHub.</li>
+        </ol>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Вверху GitHub Desktop написано <span class="ui">Current Branch: react</span>. Все коммиты этого задания пойдут в эту ветку, а сайт пока остаётся прежним.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 2 ============ -->
+    <section class="part" id="part-2">
+      <p class="part-no">Часть 2</p>
+      <h2>Проект на Vite</h2>
+      <p>React-код нельзя просто открыть в браузере двойным щелчком — его нужно собрать. Этим займётся <b>Vite</b>: пока вы работаете, он показывает сайт и мгновенно обновляет его при сохранении, а в конце собирает готовые файлы для публикации.</p>
+
+      <section class="step" id="step-3">
+        <h3><span class="step-no">Шаг 3</span>Разложите файлы по-новому</h3>
+        <p>Сейчас папка сайта выглядит так:</p>
+        <div class="code short" data-snippet="tree-before" data-lang="plain" data-nocopy></div>
+        <p>В VS Code, в панели <span class="ui">Explorer</span>:</p>
+        <ol>
+          <li>Создайте папки <code>old</code>, <code>src</code> и <code>public</code> (значок <span class="ui">New Folder</span>).</li>
+          <li>Перетащите <code>index.html</code> и <code>script.js</code> в <code>old</code>. Это старая версия: по ней вы будете переписывать разметку, а в конце удалите.</li>
+          <li>Перетащите <code>style.css</code> в <code>src</code>.</li>
+          <li>Перетащите <code>data.js</code> в <code>src</code> и переименуйте в <code>projects.js</code> (правый клик → <span class="ui">Rename</span> или <kbd>F2</kbd>).</li>
+          <li>Перетащите папку <code>images</code> в <code>public</code>.</li>
+        </ol>
+        <div class="code short" data-snippet="tree-after" data-lang="plain" data-nocopy></div>
+        <ul>
+          <li><code>src</code> — исходный код: компоненты, данные, стили. Vite соберёт его в готовый сайт.</li>
+          <li><code>public</code> — файлы, которые попадут на сайт как есть, например картинки. Пути вида <code>images/avatar.jpg</code> продолжат работать.</li>
+        </ul>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Старая версия никуда не пропадёт: она сохранена в релизе <code>v2</code> и в истории коммитов.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-4">
+        <h3><span class="step-no">Шаг 4</span>Создайте файлы проекта</h3>
+        <p>Создайте в корне папки — рядом с <code>old</code>, <code>src</code> и <code>public</code> — шесть файлов. Начните с <code>.gitignore</code>:</p>
+        <div class="code short" data-snippet="gitignore" data-lang="plain" data-file=".gitignore" data-where="весь файл"></div>
+        <p>Скоро появится папка <code>node_modules</code> — тысячи файлов библиотек. Хранить их в Git не нужно: их всегда можно скачать заново. <code>.gitignore</code> говорит Git и GitHub Desktop не обращать на них внимания. <code>dist</code> — папка с собранным сайтом, её тоже сохранять не нужно.</p>
+        <div class="code" data-snippet="package-json" data-lang="json" data-file="package.json" data-where="весь файл"></div>
+        <p><code>package.json</code> — описание проекта: какие библиотеки нужны (<code>dependencies</code>) и какие команды есть (<code>scripts</code>).</p>
+        <div class="code" data-snippet="vite-config" data-lang="js" data-file="vite.config.js" data-where="весь файл"></div>
+        <p><code>vite.config.js</code> — настройки Vite: подключаем поддержку React.</p>
+        <div class="code" data-snippet="index-html" data-lang="html" data-file="index.html" data-where="весь файл, новый"></div>
+        <p>Новая <code>index.html</code> почти пустая: всё содержимое React нарисует внутри <code>&lt;div id="root"&gt;</code>. Последняя строка запускает приложение.</p>
+        <div class="code" data-snippet="main-jsx" data-lang="js" data-file="src/main.jsx" data-where="весь файл"></div>
+        <p><code>main.jsx</code> — точка входа: подключает стили и рисует компонент <code>App</code> внутри <code>#root</code>. Расширение <code>.jsx</code> — у файлов, где JavaScript смешан с разметкой.</p>
+        <div class="code short" data-snippet="app-hello" data-lang="js" data-file="src/App.jsx" data-where="весь файл"></div>
+        <p><code>App</code> — главный компонент. Пока он показывает одну строку.</p>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Имя <code>.gitignore</code> начинается с точки и не имеет расширения. Создавайте файл в VS Code кнопкой <span class="ui">New File</span> — тогда Windows не превратит его в <code>.gitignore.txt</code>.</p>
+        </div>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Обычно React-проект создают одной командой <code>npm create vite@latest</code> — она делает эти файлы за вас. Мы создаём их руками, чтобы было понятно, что за что отвечает.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-5">
+        <h3><span class="step-no">Шаг 5</span>Установите библиотеки и запустите сайт</h3>
+        <ol>
+          <li>Выполните в терминале:
+            <div class="code short" data-snippet="term-install" data-lang="plain" data-file="Терминал" data-terminal data-where="в терминал VS Code"></div>
+            npm скачает React и Vite в папку <code>node_modules</code> (это займёт до минуты) и создаст <code>package-lock.json</code> — точный список установленных версий. Этот файл нужно сохранять в Git.
+          </li>
+          <li>Запустите сайт:
+            <div class="code short" data-snippet="term-dev" data-lang="plain" data-file="Терминал" data-terminal data-where="в терминал VS Code"></div>
+            В терминале появится адрес <code>http://localhost:5173/</code>. Откройте его: <kbd>Ctrl</kbd>+клик по ссылке. На тёмном фоне — «Привет, React!».
+          </li>
+          <li>Поменяйте текст в <code>App.jsx</code> и сохраните — страница обновится сама, без <kbd>F5</kbd>.</li>
+        </ol>
+        <p><code>localhost</code> — это ваш компьютер: адрес работает только у вас и только пока запущен <code>npm run dev</code>. Не закрывайте терминал, пока работаете. Остановить сервер — <kbd>Ctrl</kbd>+<kbd>C</kbd> в терминале.</p>
+        <p class="muted">В консоли браузера может быть сообщение «Download the React DevTools…» — это совет установить расширение для браузера, а не ошибка.</p>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>В GitHub Desktop на вкладке <span class="ui">Changes</span> — новые файлы проекта и <code>package-lock.json</code>, но <b>нет</b> <code>node_modules</code>. Сделайте коммит «Проект на Vite» и нажмите <span class="ui">Push origin</span>.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 3 ============ -->
+    <section class="part" id="part-3">
+      <p class="part-no">Часть 3</p>
+      <h2>Компоненты и JSX</h2>
+      <p>Страница будет собрана из таких компонентов:</p>
+
+      <figure class="map" aria-label="Дерево компонентов">
+        <div class="map-box solid">
+          <div class="map-head"><span class="map-sel">&lt;Header /&gt;</span><span class="map-step">шаг 6</span></div>
+          <p class="map-what">Шапка с меню</p>
+        </div>
+        <div class="map-box">
+          <div class="map-head"><span class="map-sel">section#about</span><span class="map-step">шаг 8</span></div>
+          <div class="map-cols">
+            <div class="map-box solid">
+              <div class="map-head"><span class="map-sel">&lt;Profile /&gt;</span><span class="map-step">шаг 7</span></div>
+              <p class="map-what">Фото, имя, контакты</p>
+            </div>
+            <div class="map-box solid">
+              <div class="map-head"><span class="map-sel">&lt;Timeline /&gt;</span><span class="map-step">шаги 11, 14, 15</span></div>
+              <p class="map-what">Заголовок, <b>&lt;FilterBar /&gt;</b> (шаг 13) и <b>&lt;TimelineItem /&gt;</b> для каждого проекта (шаг 10). Хранит выбранный фильтр.</p>
+            </div>
+          </div>
+        </div>
+        <div class="map-box">
+          <div class="map-head"><span class="map-sel">section#projects</span><span class="map-step">шаг 12</span></div>
+          <div class="map-box solid">
+            <div class="map-head"><span class="map-sel">&lt;ProjectCard /&gt;</span><span class="map-step">шаг 12</span></div>
+            <p class="map-what">Карточка — для каждого проекта, у которого она есть</p>
+          </div>
+        </div>
+        <figcaption>Всё это — внутри главного компонента <code>&lt;App /&gt;</code>. Названия компонентов пишутся с большой буквы, а используются как теги.</figcaption>
+      </figure>
+
+      <section class="step" id="step-6">
+        <h3><span class="step-no">Шаг 6</span>Первый компонент: шапка</h3>
+        <ol>
+          <li>Создайте в <code>src</code> папку <code>components</code>, а в ней файл <code>Header.jsx</code>:
+            <div class="code" data-snippet="header-jsx" data-lang="js" data-file="src/components/Header.jsx" data-where="весь файл"></div>
+          </li>
+          <li>Подключите шапку в <code>App.jsx</code>:
+            <div class="code short" data-snippet="app-header" data-lang="js" data-file="src/App.jsx" data-where="весь файл"></div>
+          </li>
+        </ol>
+        <p>Правила, которые пригодятся во всех следующих шагах:</p>
+        <ul>
+          <li><b>Компонент</b> — функция с именем с большой буквы, которая возвращает разметку. Используется как тег: <code>&lt;Header /&gt;</code>.</li>
+          <li>Разметка внутри JavaScript называется <b>JSX</b>. Она похожа на HTML, но есть отличия: вместо <code>class</code> пишем <code>className</code>; одиночные теги закрываются слешем — <code>&lt;img /&gt;</code>; значения из JavaScript вставляются в фигурных скобках — <code>{project.title}</code>.</li>
+          <li><code>export default</code> — «этот файл отдаёт компонент наружу». <code>import Header from './components/Header.jsx'</code> — «возьми его отсюда».</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>На странице — шапка с меню, остального пока нет.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-7">
+        <h3><span class="step-no">Шаг 7</span>Профиль</h3>
+        <p>Создайте <code>src/components/Profile.jsx</code> и перенесите в него свои данные из <code>old/index.html</code>: фото, имя, подпись, контакты.</p>
+        <div class="code" data-snippet="profile-jsx" data-lang="js" data-file="src/components/Profile.jsx" data-where="весь файл"></div>
+        <p>При переносе из HTML замените <code>class</code> на <code>className</code> и закройте <code>&lt;img … /&gt;</code> слешем. Профиль появится на странице в следующем шаге.</p>
+      </section>
+
+      <section class="step" id="step-8">
+        <h3><span class="step-no">Шаг 8</span>Каркас страницы</h3>
+        <div class="code" data-snippet="app-layout" data-lang="js" data-file="src/App.jsx" data-where="весь файл"></div>
+        <ul>
+          <li>Компонент возвращает <b>один</b> корневой элемент. Шапка и <code>&lt;main&gt;</code> — два элемента, поэтому их обернули в <code>&lt;&gt;…&lt;/&gt;</code>. Такая «пустая» обёртка называется фрагментом и на странице не видна.</li>
+          <li><code>{/* … */}</code> — комментарий внутри JSX.</li>
+          <li>Скобки после <code>return (</code> нужны, когда разметка занимает несколько строк.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Шапка, профиль слева, справа пока пусто, ниже — заголовок «Проекты». Сделайте коммит «Шапка и профиль».</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 4 ============ -->
+    <section class="part" id="part-4">
+      <p class="part-no">Часть 4</p>
+      <h2>Данные и props</h2>
+
+      <section class="step" id="step-9">
+        <h3><span class="step-no">Шаг 9</span>Данные: projects.js</h3>
+        <p>Откройте <code>src/projects.js</code> (бывший <code>data.js</code>) и сделайте две правки:</p>
+        <ol>
+          <li>Допишите <code>export</code> перед <code>const projects</code>.</li>
+          <li>Добавьте в начало файла массив <code>filters</code> — кнопки фильтров с вашими категориями.</li>
+        </ol>
+        <div class="code" data-snippet="projects-js" data-lang="js" data-file="src/projects.js" data-where="весь файл — пример, у вас свои проекты"></div>
+        <p><code>export const</code> делает переменную доступной другим файлам. Забирают её так: <code>import { projects } from '../projects.js'</code>. Фигурные скобки нужны, потому что из файла можно экспортировать несколько значений по имени, а <code>export default</code> — только одно, без скобок.</p>
+        <p>Теперь и кнопки фильтров — это данные: чтобы добавить категорию, достаточно добавить строку в <code>filters</code>.</p>
+      </section>
+
+      <section class="step" id="step-10">
+        <h3><span class="step-no">Шаг 10</span>Запись таймлайна: props</h3>
+        <div class="code" data-snippet="timelineitem-jsx" data-lang="js" data-file="src/components/TimelineItem.jsx" data-where="весь файл"></div>
+        <ul>
+          <li><b>Props</b> — параметры компонента. Когда пишем <code>&lt;TimelineItem project={p} /&gt;</code>, функция получает объект <code>{ project: p }</code>. Фигурные скобки в параметрах — <code>({ project })</code> — достают из него <code>project</code>.</li>
+          <li><code>project.tag &amp;&amp; &lt;span…&gt;</code> — «если есть метка, покажи её». Если <code>tag</code> пустой, React ничего не нарисует.</li>
+          <li><code>project.card ? A : B</code> — запись становится ссылкой, только если есть карточка. То же самое вы делали в задании 2.</li>
+          <li><code>href={`#project-${project.id}`}</code> — значение атрибута собирается из шаблонной строки.</li>
+          <li>Кусок JSX можно сохранить в переменную, как <code>content</code>, и использовать дважды.</li>
+        </ul>
+        <p>Запись появится на странице в следующем шаге.</p>
+      </section>
+
+      <section class="step" id="step-11">
+        <h3><span class="step-no">Шаг 11</span>Таймлайн: map и key</h3>
+        <ol>
+          <li>Создайте <code>src/components/Timeline.jsx</code>:
+            <div class="code" data-snippet="timeline-basic" data-lang="js" data-file="src/components/Timeline.jsx" data-where="весь файл"></div>
+          </li>
+          <li>Добавьте его в <code>App.jsx</code>:
+            <div class="code" data-snippet="app-timeline" data-lang="js" data-file="src/App.jsx" data-where="весь файл"></div>
+          </li>
+        </ol>
+        <ul>
+          <li><code>projects.map(…)</code> превращает массив проектов в массив компонентов — как в задании 2 вы превращали его в строки HTML. Только <code>join</code> и <code>innerHTML</code> больше не нужны: React умеет рисовать массивы сам.</li>
+          <li><code>key</code> — уникальное имя каждого элемента списка. По нему React понимает, какая запись какая, когда список меняется. Берите <code>id</code> из данных.</li>
+        </ul>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Забыли <code>key</code> — в консоли браузера появится красное сообщение <code>Each child in a list should have a unique "key" prop</code>. Страница при этом работает, но ошибку нужно исправить.</p>
+        </div>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Таймлайн выглядит как раньше, только кнопок фильтров пока нет.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-12">
+        <h3><span class="step-no">Шаг 12</span>Карточки проектов</h3>
+        <ol>
+          <li>Создайте <code>src/components/ProjectCard.jsx</code>:
+            <div class="code" data-snippet="projectcard-jsx" data-lang="js" data-file="src/components/ProjectCard.jsx" data-where="весь файл"></div>
+          </li>
+          <li>Нарисуйте карточки в <code>App.jsx</code>:
+            <div class="code" data-snippet="app-final" data-lang="js" data-file="src/App.jsx" data-where="весь файл"></div>
+          </li>
+        </ol>
+        <ul>
+          <li><code>projects.filter((p) =&gt; p.card)</code> — только проекты с карточкой, как в задании 2.</li>
+          <li>Ссылки карточки — тоже список, поэтому тоже <code>map</code> и <code>key</code>. Ключ — <code>link.label</code>: у двух ссылок может быть одинаковый адрес, но надписи разные.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Сайт выглядит как после задания 2, только без кнопок фильтров. Клик по записи таймлайна ведёт к карточке. Сделайте коммит «Компоненты и данные» и нажмите Push.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 5 ============ -->
+    <section class="part" id="part-5">
+      <p class="part-no">Часть 5</p>
+      <h2>Состояние: useState</h2>
+      <p><b>Состояние</b> (state) — значения, которые меняются, пока человек пользуется страницей: выбранный фильтр, открытое меню, текст в поле поиска. Когда состояние меняется, React заново вызывает компонент и обновляет страницу. Вызвать функцию-компонент заново — это и есть «перерисовать».</p>
+      <p>Функции React, названия которых начинаются с <code>use</code>, называются <b>хуками</b>. Их вызывают в начале компонента, до <code>return</code>.</p>
+
+      <section class="step" id="step-13">
+        <h3><span class="step-no">Шаг 13</span>Кнопки фильтров</h3>
+        <div class="code" data-snippet="filterbar-jsx" data-lang="js" data-file="src/components/FilterBar.jsx" data-where="весь файл"></div>
+        <ul>
+          <li>Компонент сам ничего не решает: какой фильтр выбран (<code>active</code>) и что делать при клике (<code>onSelect</code>), ему передают через props.</li>
+          <li><code>onClick={() =&gt; onSelect(f.id)}</code> — обработчик клика прямо в разметке. Это замена <code>addEventListener</code> из задания 2.</li>
+          <li><code>className={…}</code> — класс зависит от условия: у выбранной кнопки есть <code>is-active</code>.</li>
+        </ul>
+        <p>Кнопки появятся в следующем шаге.</p>
+      </section>
+
+      <section class="step" id="step-14">
+        <h3><span class="step-no">Шаг 14</span>useState: выбранный фильтр</h3>
+        <div class="code" data-snippet="timeline-state" data-lang="js" data-file="src/components/Timeline.jsx" data-where="весь файл"></div>
+        <ul>
+          <li><code>useState('all')</code> создаёт состояние с начальным значением <code>'all'</code> и возвращает пару: текущее значение и функцию, которая его меняет. Квадратные скобки раскладывают пару на две переменные: <code>filter</code> и <code>setFilter</code>.</li>
+          <li><code>&lt;FilterBar active={filter} onSelect={setFilter} /&gt;</code> — кнопки получают текущий фильтр и функцию для его смены.</li>
+          <li>Клик по «Хобби» → <code>setFilter('hobby')</code> → React снова вызывает <code>Timeline</code>, теперь <code>filter</code> равен <code>'hobby'</code> → <code>visible</code> считается заново → React обновляет на странице только то, что изменилось.</li>
+        </ul>
+        <p>Сравните с заданием 2: там вы сами снимали и ставили классы кнопкам и вызывали <code>renderTimeline</code>. Здесь вы только меняете значение — остальное делает React. Даже подсветка кнопки обновляется сама, потому что <code>className</code> зависит от <code>filter</code>.</p>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Фильтры работают, нажатая кнопка подсвечена. Сделайте коммит «Фильтры на useState» и нажмите Push.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 6 ============ -->
+    <section class="part" id="part-6">
+      <p class="part-no">Часть 6</p>
+      <h2>Эффекты: useEffect</h2>
+      <p>Компонент должен только вычислять разметку. Но иногда нужно сделать что-то «снаружи»: сохранить данные в браузере, поменять заголовок вкладки, следить за нажатиями клавиш. Это называется <b>побочным эффектом</b>, и для него есть хук <code>useEffect</code>: код внутри выполняется после того, как React обновил страницу.</p>
+
+      <section class="step" id="step-15">
+        <h3><span class="step-no">Шаг 15</span>Запомните выбранный фильтр</h3>
+        <div class="code" data-snippet="timeline-final" data-lang="js" data-file="src/components/Timeline.jsx" data-where="весь файл"></div>
+        <ul>
+          <li><code>localStorage</code> — память браузера для сайта. Хранит строки по ключу и не стирается при перезагрузке. <code>getItem</code> читает, <code>setItem</code> записывает.</li>
+          <li><code>useState(localStorage.getItem('filter') || 'all')</code> — начальное значение: сохранённый фильтр, а если его нет — <code>'all'</code>.</li>
+          <li><code>useEffect(() =&gt; { … }, [filter])</code> — первый аргумент: что сделать. Второй — <b>массив зависимостей</b>: эффект запускается после первой отрисовки и потом каждый раз, когда изменилось что-то из массива. Здесь — когда сменился <code>filter</code>.</li>
+        </ul>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>В режиме разработки (<code>npm run dev</code>) React специально запускает эффекты дважды, чтобы находить ошибки. Если поставите в эффект <code>console.log</code> и увидите сообщение два раза — это нормально. На опубликованном сайте эффект запускается один раз.</p>
+        </div>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Выберите «Хобби» и обновите страницу (<kbd>F5</kbd>) — «Хобби» по-прежнему выбрано. Сохранённое значение видно в Chrome: <kbd>F12</kbd> → <span class="ui">Application</span> → <span class="ui">Local Storage</span>. Сделайте коммит «Фильтр запоминается».</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-16">
+        <h3><span class="step-no">Шаг 16</span>Когда эффект не нужен</h3>
+        <p>Частая ошибка — использовать <code>useEffect</code>, чтобы вычислить одно состояние из другого:</p>
+        <div class="code wrong" data-snippet="effect-wrong" data-lang="js" data-file="Так не нужно" data-nocopy></div>
+        <p>Это работает, но плохо: список хранится дважды, после клика React рисует страницу два раза — сначала со старым списком, потом с новым, — а в коде легко забыть обновить одну из копий. Правильно — вычислять значение прямо при отрисовке, как у вас в <code>Timeline.jsx</code>:</p>
+        <div class="code right" data-snippet="effect-right" data-lang="js" data-file="Так правильно" data-nocopy></div>
+        <p>Правило: если значение можно вычислить из того, что уже есть, — вычисляйте его, а не храните в состоянии. <code>useEffect</code> нужен, только чтобы связать компонент с чем-то вне React: памятью браузера, заголовком вкладки, клавиатурой, сервером.</p>
+      </section>
+
+      <section class="step" id="step-17">
+        <h3><span class="step-no">Шаг 17</span>По желанию: картинка во весь экран</h3>
+        <p>Шаг необязательный, но показывает ещё одну важную сторону <code>useEffect</code> — уборку. По клику картинка карточки открывается во весь экран, а закрывается клавишей <kbd>Esc</kbd> или кликом.</p>
+        <ol>
+          <li>Создайте <code>src/components/Lightbox.jsx</code>:
+            <div class="code" data-snippet="lightbox-jsx" data-lang="js" data-file="src/components/Lightbox.jsx" data-where="весь файл"></div>
+          </li>
+          <li>Обновите карточку — у картинки появился обработчик клика:
+            <div class="code" data-snippet="projectcard-lightbox" data-lang="js" data-file="src/components/ProjectCard.jsx" data-where="весь файл"></div>
+          </li>
+          <li>Обновите <code>App.jsx</code>:
+            <div class="code" data-snippet="app-lightbox" data-lang="js" data-file="src/App.jsx" data-where="весь файл"></div>
+          </li>
+          <li>Добавьте стили:
+            <div class="code" data-snippet="css-lightbox" data-lang="css" data-file="src/style.css" data-where="в конец файла"></div>
+          </li>
+        </ol>
+        <ul>
+          <li>В <code>App</code> новое состояние <code>zoomed</code>: какая картинка открыта, или <code>null</code> — никакая. Карточка по клику вызывает <code>onZoom</code>, то есть <code>setZoomed</code>.</li>
+          <li><code>{zoomed &amp;&amp; &lt;Lightbox … /&gt;}</code> — окно есть на странице, только когда что-то выбрано.</li>
+          <li>В <code>Lightbox</code> эффект начинает следить за клавиатурой, а функция, которую эффект возвращает, — <b>уборка</b>: React вызывает её, когда окно исчезает. Без уборки обработчики копились бы после каждого открытия.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Клик по картинке в карточке открывает её во весь экран. <kbd>Esc</kbd> или клик — закрывают.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 7 ============ -->
+    <section class="part" id="part-7">
+      <p class="part-no">Часть 7</p>
+      <h2>Публикация</h2>
+      <p>Браузер не понимает JSX. Перед публикацией Vite <b>собирает</b> проект: превращает компоненты в обычный JavaScript и складывает готовый сайт в папку <code>dist</code>. На GitHub это будет делать <b>GitHub Actions</b> — автоматически после каждого push в <code>main</code>.</p>
+
+      <section class="step" id="step-18">
+        <h3><span class="step-no">Шаг 18</span>Проверьте сборку</h3>
+        <p>Остановите <code>npm run dev</code> (<kbd>Ctrl</kbd>+<kbd>C</kbd>) и выполните:</p>
+        <div class="code short" data-snippet="term-build" data-lang="plain" data-file="Терминал" data-terminal data-where="в терминал VS Code"></div>
+        <p>Первая команда соберёт сайт в папку <code>dist</code>, вторая покажет собранную версию по адресу <code>http://localhost:4173/</code> — так сайт будет выглядеть в интернете. Проверьте фильтры и карточки, затем остановите сервер.</p>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Если сборка не прошла, в терминале будет красное сообщение с именем файла и номером строки. Найдите эту строку и сравните с <a href="#full">полным кодом</a>.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-19">
+        <h3><span class="step-no">Шаг 19</span>Файл публикации</h3>
+        <ol>
+          <li>Создайте в корне папку <code>.github</code>, в ней папку <code>workflows</code>, а в ней файл <code>deploy.yml</code>:
+            <div class="code" data-snippet="deploy-yml" data-lang="yaml" data-file=".github/workflows/deploy.yml" data-where="весь файл"></div>
+          </li>
+          <li>Удалите папку <code>old</code> — старая версия больше не нужна.</li>
+          <li>Сделайте коммит «Публикация через GitHub Actions» и нажмите Push.</li>
+        </ol>
+        <p>Это инструкция для GitHub: при каждом push в <code>main</code> взять код, установить библиотеки (<code>npm ci</code>), собрать сайт (<code>npm run build</code>) и опубликовать папку <code>dist</code>. Файл взят из документации Vite.</p>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Папка <code>.github</code> — с точкой, <code>workflows</code> — во множественном числе, расширение — <code>.yml</code>. В YAML важны отступы: копируйте файл целиком, ничего не выравнивая.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-20">
+        <h3><span class="step-no">Шаг 20</span>Включите публикацию через Actions</h3>
+        <ol>
+          <li>На GitHub откройте свой репозиторий → <span class="ui">Settings</span> → <span class="ui">Pages</span>.</li>
+          <li>В разделе <span class="ui">Build and deployment</span>, в поле <span class="ui">Source</span>, выберите <span class="ui">GitHub Actions</span>. Сохранять не нужно — настройка применяется сразу.</li>
+        </ol>
+        <p>GitHub может предложить готовые варианты (Jekyll, Static HTML) — не выбирайте их: у вас свой файл. Сайт пока показывает прежнюю версию.</p>
+      </section>
+
+      <section class="step" id="step-21">
+        <h3><span class="step-no">Шаг 21</span>Объедините ветки</h3>
+        <ol>
+          <li>В GitHub Desktop нажмите <span class="ui">Current Branch</span> и выберите <code>main</code>.</li>
+          <li>В меню выберите <span class="ui">Branch → Merge into current branch…</span>, выберите <code>react</code> и нажмите <span class="ui">Create a merge commit</span>.</li>
+          <li>Нажмите <span class="ui">Push origin</span>.</li>
+          <li>На GitHub откройте вкладку <span class="ui">Actions</span>: там запуск «Deploy to GitHub Pages». Жёлтый кружок — идёт сборка, зелёная галочка — сайт опубликован. Обычно это занимает минуту-две.</li>
+        </ol>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Откройте <code>https://ваш-логин.github.io</code>: это версия на React. Фильтры работают и запоминаются, переходы к карточкам работают, в консоли нет ошибок.</p>
+        </div>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Дальше можно работать прямо в <code>main</code>: каждый push будет собирать и публиковать сайт сам. Ветку <code>react</code> можно удалить: <span class="ui">Branch → Delete</span>.</p>
+        </div>
+      </section>
+
+      <section class="step" id="trouble">
+        <h3>Если что-то не работает</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Что видите</th><th>Что проверить</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>Could not read package.json</code></td>
+                <td><ul>
+                  <li>Терминал открыт не в той папке. Откройте в VS Code именно папку сайта и запустите новый терминал.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Пустая страница на localhost</td>
+                <td><ul>
+                  <li>Откройте консоль (<kbd>F12</kbd>): красная ошибка покажет файл и строку.</li>
+                  <li>В <code>index.html</code> есть <code>&lt;div id="root"&gt;</code> и <code>src="/src/main.jsx"</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>Failed to resolve import</code></td>
+                <td><ul>
+                  <li>Путь в <code>import</code> не совпадает с файлом: имя, папка, регистр букв, расширение <code>.jsx</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>… is not defined</code></td>
+                <td><ul>
+                  <li>Компонент или функция используется, но не импортирована: проверьте строки <code>import</code> вверху файла.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>Adjacent JSX elements must be wrapped</code></td>
+                <td><ul>
+                  <li>Компонент возвращает несколько элементов подряд: оберните их в <code>&lt;&gt;…&lt;/&gt;</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>Invalid DOM property `class`</code></td>
+                <td><ul>
+                  <li>В JSX пишется <code>className</code>, а не <code>class</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>Each child in a list should have a unique "key" prop</code></td>
+                <td><ul>
+                  <li>У компонента внутри <code>map</code> нет <code>key</code> или ключи повторяются.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Таймлайн пустой, ни одна кнопка не выбрана</td>
+                <td><ul>
+                  <li>В памяти браузера остался фильтр, которого больше нет (например, после переименования категории). Нажмите «Все».</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>В GitHub Desktop тысячи изменённых файлов</td>
+                <td><ul>
+                  <li>Нет файла <code>.gitignore</code> или он называется иначе. Создайте его (шаг 4) — <code>node_modules</code> пропадёт из списка.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Во вкладке Actions красный крестик</td>
+                <td><ul>
+                  <li>Откройте запуск и шаг с крестиком — там текст ошибки.</li>
+                  <li>Ошибка в шаге <code>Install dependencies</code> — закоммичен ли <code>package-lock.json</code>?</li>
+                  <li>Ошибка в шаге <code>Build</code> — выполните <code>npm run build</code> у себя и исправьте ошибку.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>На сайте старая версия, README или 404</td>
+                <td><ul>
+                  <li>В Settings → Pages источник — <span class="ui">GitHub Actions</span> (шаг 20).</li>
+                  <li>Ветки объединены и отправлены: в GitHub Desktop выбрана <code>main</code>, Push сделан.</li>
+                  <li>В Actions зелёная галочка; обновите страницу с <kbd>Ctrl</kbd>+<kbd>F5</kbd>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Нет картинок</td>
+                <td><ul>
+                  <li>Картинки лежат в <code>public/images</code>, пути в <code>projects.js</code> — <code>images/…</code>, регистр букв совпадает.</li>
+                </ul></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 8 ============ -->
+    <section class="part" id="part-8">
+      <p class="part-no">Часть 8</p>
+      <h2>Сдача</h2>
+
+      <section class="step" id="step-22">
+        <h3><span class="step-no">Шаг 22</span>Сохраните версию v3</h3>
+        <p>Так же, как в прошлых заданиях: <span class="ui">Releases → Create a new release</span>, тег <code>v3</code>, название «Версия 3», <span class="ui">Publish release</span>. Релиз создаётся из ветки <code>main</code> — её GitHub предлагает сам.</p>
+      </section>
+
+      <section class="step" id="checklist">
+        <h3>Самопроверка</h3>
+        <p class="progress" id="progress" aria-live="polite">Отмечено <b>0</b> из 10</p>
+        <ul class="checklist">
+          <li><label><input type="checkbox" id="chk-same"><span>Сайт выглядит и работает как после задания 2: меню, фильтры, переходы к карточкам, версия для телефона</span></label></li>
+          <li><label><input type="checkbox" id="chk-remember"><span>Выбранный фильтр сохраняется после перезагрузки страницы</span></label></li>
+          <li><label><input type="checkbox" id="chk-data"><span>Тестовый проект, добавленный только в <code>src/projects.js</code>, появился и в таймлайне, и в карточках (и потом удалён)</span></label></li>
+          <li><label><input type="checkbox" id="chk-dom"><span>Поиск по папке <code>src</code> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>) не находит <code>querySelector</code>, <code>classList</code> и <code>innerHTML</code></span></label></li>
+          <li><label><input type="checkbox" id="chk-console"><span>В консоли нет красных ошибок, в том числе про <code>key</code></span></label></li>
+          <li><label><input type="checkbox" id="chk-components"><span>В <code>src/components</code> не меньше пяти компонентов</span></label></li>
+          <li><label><input type="checkbox" id="chk-ignore"><span>В репозитории на GitHub нет папок <code>node_modules</code>, <code>dist</code> и <code>old</code></span></label></li>
+          <li><label><input type="checkbox" id="chk-actions"><span>Во вкладке Actions последний запуск — с зелёной галочкой</span></label></li>
+          <li><label><input type="checkbox" id="chk-texts"><span>В <code>projects.js</code> и <code>Profile.jsx</code> ваши данные, а не данные из примера</span></label></li>
+          <li><label><input type="checkbox" id="chk-release"><span>Создан релиз <code>v3</code></span></label></li>
+        </ul>
+
+        <div class="send">
+          <p><b>Отправьте преподавателю:</b></p>
+          <ul>
+            <li>ссылку на сайт — <code>https://ваш-логин.github.io</code>;</li>
+            <li>ссылку на репозиторий — <code>https://github.com/ваш-логин/ваш-логин.github.io</code>;</li>
+            <li>ответы на три вопроса — своими словами, по 2–3 предложения:</li>
+          </ul>
+          <ol>
+            <li>Что такое состояние в React и что происходит, когда вызывается <code>setFilter</code>?</li>
+            <li>Зачем в вашем проекте <code>useEffect</code> и что означает <code>[filter]</code> в конце?</li>
+            <li>Почему отфильтрованный список не хранится в отдельном <code>useState</code>?</li>
+          </ol>
+        </div>
+
+        <h4>Если хочется большего</h4>
+        <ul>
+          <li>Название вкладки меняется вместе с фильтром: «Портфолио — Хобби». Подсказка: второй <code>useEffect</code> и <code>document.title</code>.</li>
+          <li>Счётчик под кнопками: «Показано 3 из 6». Подсказка: <code>visible.length</code> и <code>projects.length</code>.</li>
+          <li>Поиск по названию: поле <code>&lt;input&gt;</code>, его значение — в <code>useState</code>, событие <code>onChange</code>.</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- ============ ПОЛНЫЙ КОД ============ -->
+    <section class="part" id="full">
+      <p class="part-no">Приложение</p>
+      <h2>Полный код</h2>
+      <p>Так выглядят файлы после всех шагов (без необязательного шага 17). Это тот же код, из которого собран пример в начале страницы. Картинки — те же, что в прошлых заданиях, в папке <code>public/images</code>.</p>
+      <div class="code short" data-snippet="tree-final" data-lang="plain" data-file="Структура папки" data-nocopy></div>
+      <div class="code" data-snippet="index-html" data-lang="html" data-file="index.html" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="package-json" data-lang="json" data-file="package.json" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="vite-config" data-lang="js" data-file="vite.config.js" data-where="итоговый файл"></div>
+      <div class="code short" data-snippet="gitignore" data-lang="plain" data-file=".gitignore" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="deploy-yml" data-lang="yaml" data-file=".github/workflows/deploy.yml" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="main-jsx" data-lang="js" data-file="src/main.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="app-final" data-lang="js" data-file="src/App.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="projects-js" data-lang="js" data-file="src/projects.js" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="header-jsx" data-lang="js" data-file="src/components/Header.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="profile-jsx" data-lang="js" data-file="src/components/Profile.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="timeline-final" data-lang="js" data-file="src/components/Timeline.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="timelineitem-jsx" data-lang="js" data-file="src/components/TimelineItem.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="filterbar-jsx" data-lang="js" data-file="src/components/FilterBar.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="projectcard-jsx" data-lang="js" data-file="src/components/ProjectCard.jsx" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="style-css" data-lang="css" data-file="src/style.css" data-where="итоговый файл — без изменений из задания 2"></div>
+      <p class="foot">Отметки самопроверки сохраняются только в этом браузере.</p>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= ФРАГМЕНТЫ КОДА ================= -->
+
+<script type="text/plain" data-snippet="term-versions">
+node -v
+npm -v
+</script>
+
+<script type="text/plain" data-snippet="term-install">
+npm install
+</script>
+
+<script type="text/plain" data-snippet="term-dev">
+npm run dev
+</script>
+
+<script type="text/plain" data-snippet="term-build">
+npm run build
+npm run preview
+</script>
+
+<script type="text/plain" data-snippet="tree-before">
+ваш-логин.github.io/
+├── images/
+├── data.js
+├── index.html
+├── script.js
+└── style.css
+</script>
+
+<script type="text/plain" data-snippet="tree-after">
+ваш-логин.github.io/
+├── old/
+│   ├── index.html
+│   └── script.js
+├── public/
+│   └── images/
+└── src/
+    ├── projects.js      ← бывший data.js
+    └── style.css
+</script>
+
+<script type="text/plain" data-snippet="tree-final">
+ваш-логин.github.io/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── public/
+│   └── images/
+├── src/
+│   ├── components/
+│   │   ├── FilterBar.jsx
+│   │   ├── Header.jsx
+│   │   ├── Profile.jsx
+│   │   ├── ProjectCard.jsx
+│   │   ├── Timeline.jsx
+│   │   └── TimelineItem.jsx
+│   ├── App.jsx
+│   ├── main.jsx
+│   ├── projects.js
+│   └── style.css
+├── .gitignore
+├── index.html
+├── package-lock.json    ← создаёт npm install
+├── package.json
+└── vite.config.js
+</script>
+
+<script type="text/plain" data-snippet="gitignore">
+# Папки, которые не нужно сохранять в Git
+node_modules
+dist
+</script>
+
+<script type="text/plain" data-snippet="package-json">
+{
+  "name": "portfolio",
+  "private": true,
+  "version": "3.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.2"
+  }
+}
+</script>
+
+<script type="text/plain" data-snippet="vite-config">
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+// Настройки Vite: подключаем поддержку React
+export default defineConfig({
+    plugins: [react()],
+});
+</script>
+
+<script type="text/plain" data-snippet="index-html">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Имя Фамилия — портфолио</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"><\/script>
+</body>
+</html>
+</script>
+
+<script type="text/plain" data-snippet="main-jsx">
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import './style.css';
+
+// Находим <div id="root"> и рисуем в нём компонент App
+createRoot(document.getElementById('root')).render(
+    <StrictMode>
+        <App />
+    </StrictMode>
+);
+</script>
+
+<script type="text/plain" data-snippet="app-hello">
+export default function App() {
+    return <h1>Привет, React!</h1>;
+}
+</script>
+
+<script type="text/plain" data-snippet="header-jsx">
+// Шапка с меню. Компонент — это функция, которая возвращает разметку
+export default function Header() {
+    return (
+        <header className="top-bar">
+            <nav>
+                <a href="#about">Обо мне</a>
+                <a href="#projects">Проекты</a>
+            </nav>
+        </header>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="app-header">
+import Header from './components/Header.jsx';
+
+export default function App() {
+    return <Header />;
+}
+</script>
+
+<script type="text/plain" data-snippet="profile-jsx">
+// Левая колонка: фото, имя, подпись и контакты
+export default function Profile() {
+    return (
+        <div className="profile">
+            <img src="images/avatar.jpg" alt="Фото: Имя Фамилия" className="avatar" />
+            <h1>Имя Фамилия</h1>
+            <p className="tagline">Изучаю веб-разработку, дизайн и React</p>
+
+            <h2>Контакты</h2>
+            <ul className="contacts">
+                <li><a href="mailto:name@example.com">name@example.com</a></li>
+                <li><a href="https://t.me/username" target="_blank">Telegram</a></li>
+                <li><a href="https://github.com/username" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="app-layout">
+import Header from './components/Header.jsx';
+import Profile from './components/Profile.jsx';
+
+export default function App() {
+    return (
+        <>
+            <Header />
+            <main>
+                <section id="about" className="about">
+                    <Profile />
+                    {/* Здесь будет таймлайн */}
+                </section>
+
+                <section id="projects" className="projects">
+                    <h2>Проекты</h2>
+                    {/* Здесь будут карточки */}
+                </section>
+            </main>
+        </>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="projects-js">
+// Кнопки фильтров: id — категория в проектах, label — надпись на кнопке
+export const filters = [
+    { id: 'all', label: 'Все' },
+    { id: 'study', label: 'Учёба' },
+    { id: 'hackathon', label: 'Хакатоны' },
+    { id: 'hobby', label: 'Хобби' },
+];
+
+// Все проекты сайта. Новые — сверху.
+// Чтобы добавить проект, скопируйте любой объект и поменяйте значения.
+export const projects = [
+    {
+        id: 'portfolio',
+        date: 'Сентябрь 2026',
+        title: 'Сайт-портфолио',
+        summary: 'Первый сайт на HTML и CSS, опубликован на GitHub Pages',
+        categories: ['study'],
+        tag: '',
+        card: {
+            image: 'images/project-1.jpg',
+            alt: 'Скриншот сайта-портфолио',
+            text: 'Этот сайт: компоненты на React, фильтры с запоминанием выбора и автоматическая публикация на GitHub Pages.',
+            links: [
+                { label: 'Код на GitHub', url: 'https://github.com/username/username.github.io' },
+            ],
+        },
+    },
+    {
+        id: 'coffee',
+        date: 'Май 2026',
+        title: 'Лендинг для кофейни',
+        summary: 'Учебный проект: макет в Figma и вёрстка',
+        categories: ['study'],
+        tag: '',
+        card: {
+            image: 'images/project-2.jpg',
+            alt: 'Главный экран лендинга кофейни',
+            text: 'Одностраничный сайт с меню, фотографиями зала и формой бронирования столика.',
+            links: [
+                { label: 'Открыть сайт', url: 'https://example.com' },
+                { label: 'Макет в Figma', url: 'https://example.com' },
+            ],
+        },
+    },
+    {
+        id: 'habits',
+        date: 'Март 2026',
+        title: 'Трекер привычек',
+        summary: 'Дизайн интерфейса в команде из 4 человек за 48 часов',
+        categories: ['hackathon'],
+        tag: 'Хакатон',
+        card: null,
+    },
+    {
+        id: 'cat',
+        date: 'Январь 2026',
+        title: 'Игра «Кот в лабиринте»',
+        summary: 'Игра на Scratch: 10 уровней и таблица рекордов',
+        categories: ['hobby'],
+        tag: '',
+        card: {
+            image: 'images/project-3.jpg',
+            alt: 'Уровень из игры «Кот в лабиринте»',
+            text: 'Кот ищет выход из лабиринта и собирает рыбок. Десять уровней, таймер и таблица рекордов.',
+            links: [
+                { label: 'Играть на Scratch', url: 'https://example.com' },
+            ],
+        },
+    },
+    {
+        id: 'html-course',
+        date: 'Октябрь 2025',
+        title: 'Курс «Основы HTML и CSS»',
+        summary: 'Онлайн-курс: 24 урока и итоговый проект',
+        categories: ['study'],
+        tag: '',
+        card: null,
+    },
+    {
+        id: 'photo',
+        date: 'Лето 2025',
+        title: 'Фотопроект «Город после дождя»',
+        summary: 'Серия из 12 фотографий',
+        categories: ['hobby'],
+        tag: '',
+        card: {
+            image: 'images/project-4.jpg',
+            alt: 'Фотография из серии «Город после дождя»',
+            text: 'Серия из 12 фотографий: отражения в лужах, мокрый асфальт и вечерние огни.',
+            links: [
+                { label: 'Смотреть все фото', url: 'https://example.com' },
+            ],
+        },
+    },
+];
+</script>
+
+<script type="text/plain" data-snippet="timelineitem-jsx">
+// Одна запись таймлайна. project приходит снаружи — через props
+export default function TimelineItem({ project }) {
+    const content = (
+        <>
+            <div className="date">{project.date}</div>
+            <h3>
+                {project.title} {project.tag && <span className="tag">{project.tag}</span>}
+            </h3>
+            <p>{project.summary}</p>
+        </>
+    );
+
+    // Есть карточка — запись становится ссылкой на неё
+    return (
+        <article className="timeline-item">
+            {project.card ? <a href={`#project-${project.id}`}>{content}</a> : content}
+        </article>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="timeline-basic">
+import TimelineItem from './TimelineItem.jsx';
+import { projects } from '../projects.js';
+
+export default function Timeline() {
+    return (
+        <div className="timeline-block">
+            <h2>Мой путь</h2>
+
+            <div className="timeline">
+                {projects.map((p) => (
+                    <TimelineItem key={p.id} project={p} />
+                ))}
+            </div>
+        </div>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="app-timeline">
+import Header from './components/Header.jsx';
+import Profile from './components/Profile.jsx';
+import Timeline from './components/Timeline.jsx';
+
+export default function App() {
+    return (
+        <>
+            <Header />
+            <main>
+                <section id="about" className="about">
+                    <Profile />
+                    <Timeline />
+                </section>
+
+                <section id="projects" className="projects">
+                    <h2>Проекты</h2>
+                    {/* Здесь будут карточки */}
+                </section>
+            </main>
+        </>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="projectcard-jsx">
+// Карточка проекта: картинка, описание и ссылки
+export default function ProjectCard({ project }) {
+    return (
+        <article className="card" id={`project-${project.id}`}>
+            <img src={project.card.image} alt={project.card.alt} />
+            <div className="card-body">
+                <h3>{project.title}</h3>
+                <p>{project.card.text}</p>
+                <div className="card-links">
+                    {project.card.links.map((link) => (
+                        <a key={link.label} href={link.url} target="_blank">
+                            {link.label}
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </article>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="app-final">
+import Header from './components/Header.jsx';
+import Profile from './components/Profile.jsx';
+import Timeline from './components/Timeline.jsx';
+import ProjectCard from './components/ProjectCard.jsx';
+import { projects } from './projects.js';
+
+export default function App() {
+    // Карточки есть не у всех проектов
+    const withCards = projects.filter((p) => p.card);
+
+    return (
+        <>
+            <Header />
+            <main>
+                <section id="about" className="about">
+                    <Profile />
+                    <Timeline />
+                </section>
+
+                <section id="projects" className="projects">
+                    <h2>Проекты</h2>
+                    {withCards.map((p) => (
+                        <ProjectCard key={p.id} project={p} />
+                    ))}
+                </section>
+            </main>
+        </>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="filterbar-jsx">
+import { filters } from '../projects.js';
+
+// Кнопки фильтров. active — выбранный фильтр, onSelect — что делать при клике
+export default function FilterBar({ active, onSelect }) {
+    return (
+        <div className="filters">
+            {filters.map((f) => (
+                <button
+                    key={f.id}
+                    className={f.id === active ? 'filter-btn is-active' : 'filter-btn'}
+                    onClick={() => onSelect(f.id)}
+                >
+                    {f.label}
+                </button>
+            ))}
+        </div>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="timeline-state">
+import { useState } from 'react';
+import FilterBar from './FilterBar.jsx';
+import TimelineItem from './TimelineItem.jsx';
+import { projects } from '../projects.js';
+
+export default function Timeline() {
+    // Состояние: какой фильтр выбран. setFilter меняет его — и React перерисовывает компонент
+    const [filter, setFilter] = useState('all');
+
+    // Нужные проекты считаем заново при каждой отрисовке
+    const visible = filter === 'all'
+        ? projects
+        : projects.filter((p) => p.categories.includes(filter));
+
+    return (
+        <div className="timeline-block">
+            <h2>Мой путь</h2>
+
+            <FilterBar active={filter} onSelect={setFilter} />
+
+            <div className="timeline">
+                {visible.map((p) => (
+                    <TimelineItem key={p.id} project={p} />
+                ))}
+            </div>
+        </div>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="timeline-final">
+import { useState, useEffect } from 'react';
+import FilterBar from './FilterBar.jsx';
+import TimelineItem from './TimelineItem.jsx';
+import { projects } from '../projects.js';
+
+export default function Timeline() {
+    // Начальное значение — из памяти браузера, а если там пусто — 'all'
+    const [filter, setFilter] = useState(localStorage.getItem('filter') || 'all');
+
+    // После каждой смены фильтра сохраняем его в память браузера
+    useEffect(() => {
+        localStorage.setItem('filter', filter);
+    }, [filter]);
+
+    // Нужные проекты считаем заново при каждой отрисовке
+    const visible = filter === 'all'
+        ? projects
+        : projects.filter((p) => p.categories.includes(filter));
+
+    return (
+        <div className="timeline-block">
+            <h2>Мой путь</h2>
+
+            <FilterBar active={filter} onSelect={setFilter} />
+
+            <div className="timeline">
+                {visible.map((p) => (
+                    <TimelineItem key={p.id} project={p} />
+                ))}
+            </div>
+        </div>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="effect-wrong">
+const [filter, setFilter] = useState('all');
+const [visible, setVisible] = useState(projects);  // второе состояние — лишнее
+
+useEffect(() => {
+    setVisible(filter === 'all' ? projects : projects.filter((p) => p.categories.includes(filter)));
+}, [filter]);
+</script>
+
+<script type="text/plain" data-snippet="effect-right">
+const [filter, setFilter] = useState('all');
+
+const visible = filter === 'all'
+    ? projects
+    : projects.filter((p) => p.categories.includes(filter));
+</script>
+
+<script type="text/plain" data-snippet="lightbox-jsx">
+import { useEffect } from 'react';
+
+// Картинка во весь экран. Закрывается клавишей Esc или кликом
+export default function Lightbox({ image, alt, onClose }) {
+    useEffect(() => {
+        function handleKey(event) {
+            if (event.key === 'Escape') onClose();
+        }
+        document.addEventListener('keydown', handleKey);
+
+        // Уборка: когда окно закрывается, перестаём следить за клавиатурой
+        return () => document.removeEventListener('keydown', handleKey);
+    }, [onClose]);
+
+    return (
+        <div className="lightbox" onClick={onClose}>
+            <img src={image} alt={alt} />
+        </div>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="projectcard-lightbox">
+// Карточка проекта: картинка, описание и ссылки. Клик по картинке — onZoom
+export default function ProjectCard({ project, onZoom }) {
+    return (
+        <article className="card" id={`project-${project.id}`}>
+            <img
+                src={project.card.image}
+                alt={project.card.alt}
+                onClick={() => onZoom(project.card)}
+            />
+            <div className="card-body">
+                <h3>{project.title}</h3>
+                <p>{project.card.text}</p>
+                <div className="card-links">
+                    {project.card.links.map((link) => (
+                        <a key={link.label} href={link.url} target="_blank">
+                            {link.label}
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </article>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="app-lightbox">
+import { useState } from 'react';
+import Header from './components/Header.jsx';
+import Profile from './components/Profile.jsx';
+import Timeline from './components/Timeline.jsx';
+import ProjectCard from './components/ProjectCard.jsx';
+import Lightbox from './components/Lightbox.jsx';
+import { projects } from './projects.js';
+
+export default function App() {
+    // Какая картинка открыта во весь экран: объект card или null — никакая
+    const [zoomed, setZoomed] = useState(null);
+
+    // Карточки есть не у всех проектов
+    const withCards = projects.filter((p) => p.card);
+
+    return (
+        <>
+            <Header />
+            <main>
+                <section id="about" className="about">
+                    <Profile />
+                    <Timeline />
+                </section>
+
+                <section id="projects" className="projects">
+                    <h2>Проекты</h2>
+                    {withCards.map((p) => (
+                        <ProjectCard key={p.id} project={p} onZoom={setZoomed} />
+                    ))}
+                </section>
+            </main>
+
+            {zoomed && (
+                <Lightbox image={zoomed.image} alt={zoomed.alt} onClose={() => setZoomed(null)} />
+            )}
+        </>
+    );
+}
+</script>
+
+<script type="text/plain" data-snippet="css-lightbox">
+/* ---------- Картинка во весь экран ---------- */
+
+.card img {
+    cursor: zoom-in;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;                 /* растянуть на всё окно */
+    z-index: 20;              /* поверх шапки */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, 0.85);
+    cursor: zoom-out;
+}
+
+.lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+}
+</script>
+
+<script type="text/plain" data-snippet="deploy-yml">
+# Сборка и публикация сайта на GitHub Pages при каждом push в main
+# (файл из документации Vite: vite.dev/guide/static-deploy)
+name: Deploy to GitHub Pages
+
+on:
+  # Запуск при push в ветку main
+  push:
+    branches: ['main']
+
+  # Запуск вручную со вкладки Actions
+  workflow_dispatch:
+
+# Права, нужные для публикации на GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Одновременно идёт только одна публикация
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: lts/*
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+</script>
+
+<script type="text/plain" data-snippet="style-css">
+__STYLE_CSS__
+</script>
+
+<!-- Собранный пример (vite build), в base64 -->
+<script type="text/plain" id="preview-js">__PREVIEW_JS_B64__</script>
+<script type="text/plain" id="preview-css">__PREVIEW_CSS_B64__</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+(function () {
+  // ---- фрагменты кода ----
+  var S = {};
+  document.querySelectorAll('script[type="text/plain"][data-snippet]').forEach(function (el) {
+    S[el.dataset.snippet] = el.textContent
+      .replace(/^\r?\n/, '')
+      .replace(/\s+$/, '')
+      .replace(/<\\\/script>/g, '\x3C/script>');
+  });
+
+  // ---- блоки кода ----
+  var HLJS = { html: 'xml', css: 'css', js: 'javascript', json: 'json', yaml: 'yaml', plain: 'plaintext' };
+
+  function copyText(text, btn, pre) {
+    function done(ok) {
+      btn.textContent = ok ? 'Скопировано' : 'Выделено — нажмите Ctrl+C';
+      btn.classList.toggle('done', ok);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function () { btn.textContent = 'Копировать'; btn.classList.remove('done'); }, 2000);
+    }
+    function fallback() {
+      var r = document.createRange();
+      r.selectNodeContents(pre);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      done(false);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+    } catch (e) { fallback(); }
+  }
+
+  document.querySelectorAll('.code[data-snippet]').forEach(function (host) {
+    var key = host.dataset.snippet;
+    var text = S[key] || '';
+    var lang = host.dataset.lang || 'html';
+
+    var bar = document.createElement('div');
+    bar.className = 'code-bar';
+    if (host.dataset.file) {
+      var f = document.createElement('span');
+      f.className = 'code-file' + ('terminal' in host.dataset ? ' terminal' : '');
+      f.textContent = host.dataset.file;
+      bar.appendChild(f);
+    }
+    if (host.dataset.where) {
+      var w = document.createElement('span');
+      w.className = 'code-where';
+      w.textContent = host.dataset.where;
+      bar.appendChild(w);
+    }
+
+    var pre = document.createElement('pre');
+    var code = document.createElement('code');
+    code.className = 'language-' + (HLJS[lang] || 'plaintext');
+    code.textContent = text;
+    pre.appendChild(code);
+
+    if (!('nocopy' in host.dataset)) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy';
+      btn.textContent = 'Копировать';
+      btn.addEventListener('click', function () { copyText(text, btn, pre); });
+      bar.appendChild(btn);
+    }
+    if (bar.childNodes.length) host.appendChild(bar);
+    host.appendChild(pre);
+
+    if (window.hljs && lang !== 'plain') {
+      try { window.hljs.highlightElement(code); } catch (e) {}
+    }
+  });
+
+  // ---- живой пример: собранный сайт ----
+  function fromBase64(id) {
+    var bin = atob(document.getElementById(id).textContent.trim());
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function placeholder(label, hueA, hueB, w, h) {
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0" stop-color="hsl(' + hueA + ',55%,58%)"/><stop offset="1" stop-color="hsl(' + hueB + ',50%,28%)"/>' +
+      '</linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/>' +
+      '<text x="50%" y="50%" fill="rgba(255,255,255,0.88)" font-family="Consolas, monospace" font-size="' + Math.round(h / 10) +
+      '" text-anchor="middle" dominant-baseline="middle">' + label + '</text></svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg).replace(/'/g, '%27');
+  }
+  var IMG = {
+    'avatar.jpg': placeholder('avatar.jpg', 38, 12, 400, 400),
+    'project-1.jpg': placeholder('project-1.jpg', 222, 250, 1280, 720),
+    'project-2.jpg': placeholder('project-2.jpg', 28, 355, 1280, 720),
+    'project-3.jpg': placeholder('project-3.jpg', 150, 195, 1280, 720),
+    'project-4.jpg': placeholder('project-4.jpg', 265, 300, 1280, 720)
+  };
+
+  var frame = document.getElementById('pv-frame');
+  try {
+    var js = fromBase64('preview-js')
+      .replace(/images\/([\w-]+\.jpg)/g, function (m, name) { return IMG[name] || m; })
+      .replace(/<\/script/gi, '<\\/script')
+      .replace(/\x3C!--/g, '\\x3C!--');
+    var css = fromBase64('preview-css');
+
+    // Если память браузера недоступна (так бывает внутри встроенных окон), подставляем временную
+    var storageShim = '\x3Cscript>try{window.localStorage.getItem("x")}catch(e){var m={};Object.defineProperty(window,"localStorage",{configurable:true,value:{' +
+      'getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]}}})}\x3C/script>';
+    // Ссылки-якоря прокручивают пример, остальные ссылки отключены
+    var clickScript = '\x3Cscript>document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;e.preventDefault();' +
+      'var h=a.getAttribute("href")||"";if(h.charAt(0)==="#"){var t=document.getElementById(h.slice(1));if(t)t.scrollIntoView({behavior:"smooth"});}});\x3C/script>';
+
+    var head = S['index-html'].split('<body>')[0];
+    frame.srcdoc = head.replace('</head>', '<style>\n' + css + '\n</style>\n</head>') +
+      '<body>\n<div id="root"></div>\n' + storageShim + '\n' + clickScript + '\n' +
+      '\x3Cscript type="module">\n' + js + '\n\x3C/script>\n</body>\n</html>';
+  } catch (e) {
+    frame.srcdoc = '<p style="font:16px sans-serif;color:#eee;padding:24px">Пример не загрузился.</p>';
+  }
+
+  var stage = document.getElementById('pv-stage');
+  var win = document.getElementById('pv-window');
+  var screen = document.getElementById('pv-screen');
+  var btnDesk = document.getElementById('pv-desktop');
+  var btnPhone = document.getElementById('pv-phone');
+
+  var SIZES = { desktop: [1200, 760], phone: [390, 720] };
+  var mode = 'desktop';
+  function fit() {
+    var size = SIZES[mode];
+    var inner = stage.clientWidth - 32 - (mode === 'phone' ? 12 : 0);
+    var s = Math.min(1, inner / size[0]);
+    frame.style.width = size[0] + 'px';
+    frame.style.height = size[1] + 'px';
+    frame.style.transform = 'scale(' + s + ')';
+    screen.style.width = Math.floor(size[0] * s) + 'px';
+    screen.style.height = Math.floor(size[1] * s) + 'px';
+  }
+  function setMode(m) {
+    mode = m;
+    win.classList.toggle('phone', m === 'phone');
+    btnDesk.setAttribute('aria-pressed', String(m === 'desktop'));
+    btnPhone.setAttribute('aria-pressed', String(m === 'phone'));
+    fit();
+  }
+  btnDesk.addEventListener('click', function () { setMode('desktop'); });
+  btnPhone.addEventListener('click', function () { setMode('phone'); });
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+  window.addEventListener('resize', fit);
+  fit();
+
+  // ---- самопроверка ----
+  var KEY = 'portfolio-task3-checklist';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var boxes = document.querySelectorAll('.checklist input');
+  var progress = document.getElementById('progress');
+  function update() {
+    var n = 0;
+    boxes.forEach(function (b) { if (b.checked) n++; });
+    progress.innerHTML = 'Отмечено <b>' + n + '</b> из ' + boxes.length;
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.id];
+    b.addEventListener('change', function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+      update();
+    });
+  });
+  update();
+})();
+</script>

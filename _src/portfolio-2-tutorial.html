@@ -1,0 +1,2019 @@
+<title>Фильтры на JavaScript</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --ground: #f3f4f7;
+    --surface: #ffffff;
+    --ink: #171a23;
+    --ink-2: #4d5466;
+    --ink-3: #868c9c;
+    --rule: #dfe2ea;
+    --rule-strong: #c3c8d4;
+    --accent: #2c52cc;
+    --accent-soft: #e8edfb;
+    --ok: #17784f;
+    --ok-soft: #e3f3ea;
+    --warn: #a44d17;
+    --warn-soft: #fbede3;
+    --tip: #5f45ad;
+    --tip-soft: #efebfa;
+    --code-bg: #171a24;
+    --code-bar: #212532;
+    --code-ink: #e4e7ef;
+    --code-dim: #8a92a6;
+    --kbd-bg: #ffffff;
+    --shadow: 0 1px 2px rgba(23, 26, 35, .06), 0 8px 24px rgba(23, 26, 35, .06);
+
+    --f-display: 'Unbounded', 'Golos Text', system-ui, sans-serif;
+    --f-body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --f-mono: 'JetBrains Mono', ui-monospace, Consolas, 'Courier New', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #101218;
+      --surface: #171a22;
+      --ink: #e8ebf2;
+      --ink-2: #a7aebe;
+      --ink-3: #737a8b;
+      --rule: #262a35;
+      --rule-strong: #3a4050;
+      --accent: #8fa8ff;
+      --accent-soft: #1c2440;
+      --ok: #62cf9a;
+      --ok-soft: #13261d;
+      --warn: #f1a46f;
+      --warn-soft: #2b1d14;
+      --tip: #baa5f5;
+      --tip-soft: #221c35;
+      --code-bg: #0c0e13;
+      --code-bar: #161922;
+      --kbd-bg: #1f232d;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #101218;
+    --surface: #171a22;
+    --ink: #e8ebf2;
+    --ink-2: #a7aebe;
+    --ink-3: #737a8b;
+    --rule: #262a35;
+    --rule-strong: #3a4050;
+    --accent: #8fa8ff;
+    --accent-soft: #1c2440;
+    --ok: #62cf9a;
+    --ok-soft: #13261d;
+    --warn: #f1a46f;
+    --warn-soft: #2b1d14;
+    --tip: #baa5f5;
+    --tip-soft: #221c35;
+    --code-bg: #0c0e13;
+    --code-bar: #161922;
+    --kbd-bg: #1f232d;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  /* ---------- layout ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "intro" "toc" "main";
+    max-width: 800px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 40px 96px;
+    column-gap: 56px;
+  }
+  .intro { grid-area: intro; }
+  .toc { grid-area: toc; }
+  main { grid-area: main; min-width: 0; }
+
+  @media (min-width: 1180px) {
+    .layout {
+      max-width: 1140px;
+      grid-template-columns: 240px minmax(0, 1fr);
+      grid-template-areas: "toc intro" "toc main";
+    }
+    .toc {
+      align-self: start;
+      position: sticky;
+      top: 24px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-top: 8px;
+    }
+  }
+
+  /* ---------- intro ---------- */
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(30px, 5.2vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -.01em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  .lede {
+    font-size: 19px;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0 0 32px;
+  }
+
+  /* ---------- preview ---------- */
+  .preview {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .pv-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pv-title { font-weight: 600; margin: 0; }
+  .seg {
+    display: inline-flex;
+    background: var(--ground);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .seg button {
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-2);
+    background: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 5px 14px;
+    cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+  }
+  .pv-stage {
+    padding: 20px 16px;
+    background:
+      radial-gradient(circle at 1px 1px, var(--rule) 1px, transparent 0) 0 0 / 16px 16px,
+      var(--ground);
+    display: flex;
+    justify-content: center;
+  }
+  .pv-window {
+    background: #0b0c10;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
+    max-width: 100%;
+  }
+  .pv-window.phone { border-radius: 26px; border: 6px solid #0b0c10; }
+  .pv-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #22252e;
+  }
+  .pv-dots { display: flex; gap: 6px; }
+  .pv-dots i { width: 10px; height: 10px; border-radius: 50%; background: #4a4e5a; display: block; }
+  .phone .pv-dots { display: none; }
+  .pv-url {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: #c9ccd6;
+    background: #14161c;
+    border-radius: 6px;
+    padding: 3px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pv-screen { position: relative; overflow: hidden; background: #14161f; }
+  .pv-screen iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+    transform-origin: 0 0;
+    background: #14161f;
+  }
+  .pv-caption { font-size: 15px; color: var(--ink-2); margin: 0 0 8px; max-width: 70ch; }
+
+  /* ---------- toc ---------- */
+  .toc {
+    font-size: 14.5px;
+    line-height: 1.4;
+    margin: 40px 0 8px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+  }
+  @media (min-width: 1180px) {
+    .toc { margin: 0; padding: 8px 0 0; background: none; border: 0; }
+  }
+  .toc-title {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 12px;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; }
+  .toc > ol > li { margin-bottom: 12px; }
+  .toc > ol > li > a { font-weight: 600; color: var(--ink); text-decoration: none; }
+  .toc ol ol { margin-top: 6px; display: grid; gap: 4px; }
+  .toc ol ol a {
+    display: flex;
+    gap: 8px;
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .toc ol ol a span { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-3); min-width: 2ch; text-align: right; padding-top: 1px; }
+  .toc a:hover { color: var(--accent); }
+  @media (max-width: 1179px) {
+    .toc > ol { columns: 2 220px; column-gap: 28px; }
+    .toc > ol > li { break-inside: avoid; }
+  }
+
+  /* ---------- content ---------- */
+  .part {
+    margin-top: 72px;
+    padding-top: 36px;
+    border-top: 1px solid var(--rule-strong);
+    scroll-margin-top: 16px;
+  }
+  .part:first-child { margin-top: 48px; }
+  .part-no {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(23px, 3.4vw, 29px);
+    line-height: 1.2;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .step { margin-top: 48px; scroll-margin-top: 16px; }
+  h3 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    font-size: 21px;
+    font-weight: 650;
+    line-height: 1.3;
+    margin: 0 0 12px;
+  }
+  .step-no {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    position: relative;
+    top: -2px;
+  }
+  h4 { font-size: 17px; font-weight: 650; margin: 24px 0 8px; }
+  p, ul, ol { margin: 0 0 14px; }
+  main p, main li { max-width: 68ch; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--ink-3); }
+  strong { font-weight: 650; }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: .84em;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 1px 5px;
+    white-space: nowrap;
+  }
+  kbd {
+    font-family: var(--f-mono);
+    font-size: .8em;
+    background: var(--kbd-bg);
+    border: 1px solid var(--rule-strong);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+  .ui { font-weight: 650; }
+
+  /* ---------- code blocks ---------- */
+  .code {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0 18px;
+  }
+  .code-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 8px 10px 8px 16px;
+    background: var(--code-bar);
+    font-size: 13px;
+  }
+  .code-file { font-family: var(--f-mono); font-weight: 700; color: #fff; }
+  .code-file.console { color: #f5c46b; }
+  .code-where { color: var(--code-dim); flex: 1; min-width: 0; }
+  .code-where b { font-family: var(--f-mono); font-weight: 500; color: #f5c46b; }
+  .copy {
+    margin-left: auto;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 7px;
+    padding: 4px 12px;
+    cursor: pointer;
+  }
+  .copy:hover { background: rgba(255, 255, 255, .18); }
+  .copy.done { background: #1f7a50; border-color: #1f7a50; }
+  .code pre {
+    margin: 0;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: var(--f-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+    tab-size: 4;
+  }
+  .code pre code { background: none; border: 0; padding: 0; font-size: inherit; white-space: pre; color: inherit; }
+  .code.short pre { font-size: 14px; }
+
+  .hljs-comment, .hljs-meta { color: #7a8398; font-style: italic; }
+  .hljs-tag { color: #8e97ab; }
+  .hljs-name, .hljs-selector-tag { color: #ff9e7d; }
+  .hljs-attr, .hljs-attribute, .hljs-property { color: #8fc9ff; }
+  .hljs-string { color: #a6e3a9; }
+  .hljs-subst { color: #e4e7ef; }
+  .hljs-selector-class, .hljs-selector-id { color: #f5c46b; }
+  .hljs-selector-pseudo { color: #ff9e7d; }
+  .hljs-number, .hljs-literal { color: #ffb489; }
+  .hljs-built_in, .hljs-keyword { color: #d6a8ff; }
+  .hljs-title, .hljs-title.function_ { color: #7fd8e8; }
+  .hljs-variable, .hljs-params { color: #f5c46b; }
+
+  /* ---------- notes ---------- */
+  .note {
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 18px 0;
+    background: var(--tip-soft);
+  }
+  .note > :last-child { margin-bottom: 0; }
+  .note-label {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--tip);
+    margin: 0 0 4px;
+  }
+  .note.check { background: var(--ok-soft); }
+  .note.check .note-label { color: var(--ok); }
+  .note.pitfall { background: var(--warn-soft); }
+  .note.pitfall .note-label { color: var(--warn); }
+  .note.try { background: var(--accent-soft); }
+  .note.try .note-label { color: var(--accent); }
+  .note code { background: var(--surface); }
+  .note .code { margin: 12px 0 4px; }
+
+  details.answer { margin-top: 8px; }
+  details.answer summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+    width: fit-content;
+  }
+
+  /* ---------- requirement list ---------- */
+  .reqs { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .reqs li {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    margin: 0;
+  }
+  .reqs li::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    margin-top: 6px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+  }
+
+  /* ---------- flow figure ---------- */
+  .flow {
+    margin: 20px 0;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+  }
+  .flow-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .flow-box {
+    flex: 1 1 140px;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: var(--ground);
+    min-width: 0;
+  }
+  .flow-box b { display: block; font-family: var(--f-mono); font-size: 13px; color: var(--ink); overflow-wrap: anywhere; }
+  .flow-box span { font-size: 14px; color: var(--ink-2); }
+  .flow-arrow {
+    align-self: center;
+    font-family: var(--f-mono);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .flow figcaption { font-size: 14px; color: var(--ink-2); margin-top: 10px; }
+  @media (max-width: 560px) {
+    .flow-row { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+
+  /* ---------- table ---------- */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 13px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+  td:first-child { font-weight: 600; width: 34%; }
+  td ul { margin: 0; padding-left: 18px; }
+  td li { margin-bottom: 4px; }
+
+  /* ---------- checklist ---------- */
+  .checklist { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 2px; }
+  .checklist li { margin: 0; max-width: none; }
+  .checklist label {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .checklist label:hover { background: var(--surface); }
+  .checklist input { width: 18px; height: 18px; margin: 4px 0 0; accent-color: var(--ok); cursor: pointer; }
+  .checklist input:checked + span { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--ink-3); }
+  .progress { font-family: var(--f-mono); font-size: 13px; color: var(--ink-2); margin: 0; }
+  .progress b { color: var(--ok); }
+
+  .send {
+    margin-top: 24px;
+    padding: 18px 20px;
+    border: 1.5px solid var(--accent);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .send > :last-child { margin-bottom: 0; }
+
+  .muted { color: var(--ink-2); }
+  .foot { margin-top: 56px; font-size: 14px; color: var(--ink-3); }
+</style>
+
+<div class="layout">
+
+  <header class="intro">
+    <p class="eyebrow">Задание 2 · пошаговая инструкция</p>
+    <h1>Таймлайн с&nbsp;фильтрами на&nbsp;JavaScript</h1>
+    <p class="lede">Вы добавите на свой сайт кнопки-фильтры для таймлайна и познакомитесь с JavaScript. Потом переделаете сайт так, чтобы все проекты хранились в одном файле, а страница собиралась из него. Изменения будете сохранять на GitHub через программу GitHub Desktop.</p>
+
+    <section class="preview" aria-label="Пример готового сайта">
+      <div class="pv-toolbar">
+        <p class="pv-title">Что получится</p>
+        <div class="seg" role="group" aria-label="Размер экрана">
+          <button type="button" id="pv-desktop" aria-pressed="true">Компьютер</button>
+          <button type="button" id="pv-phone" aria-pressed="false">Телефон</button>
+        </div>
+      </div>
+      <div class="pv-stage" id="pv-stage">
+        <div class="pv-window" id="pv-window">
+          <div class="pv-bar"><span class="pv-dots"><i></i><i></i><i></i></span><span class="pv-url">https://ваш-логин.github.io</span></div>
+          <div class="pv-screen" id="pv-screen">
+            <iframe id="pv-frame" title="Пример сайта-портфолио с фильтрами"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+    <p class="pv-caption">Это живой пример: нажимайте на кнопки над таймлайном — «Учёба», «Хакатоны», «Хобби». Цветные прямоугольники — заглушки на месте ваших картинок. Код примера целиком — <a href="#full">в конце инструкции</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Содержание">
+    <p class="toc-title">Содержание</p>
+    <ol>
+      <li><a href="#before">Перед началом</a></li>
+      <li><a href="#part-1">1. GitHub Desktop</a>
+        <ol>
+          <li><a href="#step-1"><span>1</span>Установка</a></li>
+          <li><a href="#step-2"><span>2</span>Репозиторий на компьютер</a></li>
+          <li><a href="#step-3"><span>3</span>Первый коммит</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-2">2. Основы JavaScript</a>
+        <ol>
+          <li><a href="#step-4"><span>4</span>Подключаем script.js</a></li>
+          <li><a href="#step-5"><span>5</span>Переменные</a></li>
+          <li><a href="#step-6"><span>6</span>Массивы и объекты</a></li>
+          <li><a href="#step-7"><span>7</span>Функции</a></li>
+          <li><a href="#step-8"><span>8</span>filter и map</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-3">3. Фильтры</a>
+        <ol>
+          <li><a href="#step-9"><span>9</span>Категории и кнопки</a></li>
+          <li><a href="#step-10"><span>10</span>Оформление кнопок</a></li>
+          <li><a href="#step-11"><span>11</span>Логика фильтров</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-4">4. Данные вместо копий HTML</a>
+        <ol>
+          <li><a href="#step-12"><span>12</span>Все проекты в data.js</a></li>
+          <li><a href="#step-13"><span>13</span>Таймлайн из данных</a></li>
+          <li><a href="#step-14"><span>14</span>Карточки из данных</a></li>
+          <li><a href="#step-15"><span>15</span>Фильтры на данных</a></li>
+          <li><a href="#step-16"><span>16</span>Проверка новым проектом</a></li>
+          <li><a href="#trouble"><span>?</span>Если не работает</a></li>
+        </ol>
+      </li>
+      <li><a href="#part-5">5. Сдача</a>
+        <ol>
+          <li><a href="#step-17"><span>17</span>Версия v2</a></li>
+          <li><a href="#checklist"><span>✓</span>Самопроверка</a></li>
+        </ol>
+      </li>
+      <li><a href="#full">Полный код</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============ ПЕРЕД НАЧАЛОМ ============ -->
+    <section class="part" id="before">
+      <h2>Перед началом</h2>
+
+      <h4>Что должно получиться</h4>
+      <ul class="reqs">
+        <li>Над таймлайном — кнопки фильтров: «Все» и не меньше двух категорий ваших проектов.</li>
+        <li>Нажатая кнопка подсвечена, «Все» показывает все записи.</li>
+        <li>Все проекты хранятся в файле <code>data.js</code>. Записи таймлайна и карточки собираются из него — в <code>index.html</code> их больше нет.</li>
+        <li>Чтобы добавить проект, достаточно добавить одну запись в <code>data.js</code>.</li>
+        <li>Изменения сохранены на GitHub через GitHub Desktop: не меньше 5 коммитов с понятными описаниями.</li>
+        <li>Сайт обновлён по тому же адресу, создан релиз <code>v2</code>.</li>
+      </ul>
+
+      <h4>Что понадобится</h4>
+      <ul>
+        <li>Готовое <a href="https://shdis.github.io/student-tasks/portfolio-1/" target="_blank" rel="noopener">задание 1</a>: сайт по адресу <b>ваш-логин.github.io</b> и релиз <code>v1</code>.</li>
+        <li>VS Code и браузер: Chrome, Edge или Firefox.</li>
+      </ul>
+
+      <h4>Как устроено задание</h4>
+      <p>Сначала — новый инструмент (часть 1) и основы JavaScript на коротких примерах (часть 2). В части 3 вы сделаете фильтры самым простым способом. В части 4 переделаете сайт так, чтобы он собирался из данных. Этот способ сложнее, но именно так устроены современные сайты, и он понадобится в следующем задании.</p>
+      <p>Код копируйте кнопкой <b>Копировать</b> — над каждым блоком написано, в какой файл и куда его вставить. После каждого шага проверяйте результат в браузере.</p>
+    </section>
+
+    <!-- ============ ЧАСТЬ 1 ============ -->
+    <section class="part" id="part-1">
+      <p class="part-no">Часть 1</p>
+      <h2>GitHub Desktop</h2>
+      <p>В первом задании вы загружали файлы на GitHub перетаскиванием. Для одного раза это удобно, для постоянной работы — нет. <b>GitHub Desktop</b> — программа, которая связывает папку на компьютере с репозиторием на GitHub: показывает, что вы изменили, и отправляет изменения одной кнопкой.</p>
+      <p>Каждое сохранённое изменение называется <b>коммитом</b>. Это точка в истории проекта с описанием, что изменилось, — к ней всегда можно вернуться.</p>
+
+      <section class="step" id="step-1">
+        <h3><span class="step-no">Шаг 1</span>Установите GitHub Desktop</h3>
+        <ol>
+          <li>Скачайте программу с <a href="https://desktop.github.com" target="_blank" rel="noopener">desktop.github.com</a> и установите. После установки она откроется сама.</li>
+          <li>Нажмите <span class="ui">Sign in to GitHub.com</span>. Откроется браузер: войдите в свой аккаунт GitHub и подтвердите доступ (<span class="ui">Authorize desktop</span>). Вернитесь в программу.</li>
+          <li>На экране <span class="ui">Configure Git</span> оставьте имя и почту из аккаунта и нажмите <span class="ui">Finish</span>.</li>
+        </ol>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Если окно входа не появилось, войдите вручную: <span class="ui">File → Options → Accounts → Sign in</span>. На macOS — <span class="ui">GitHub Desktop → Settings → Accounts</span>.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-2">
+        <h3><span class="step-no">Шаг 2</span>Скачайте репозиторий на компьютер</h3>
+        <ol>
+          <li>Выберите <span class="ui">File → Clone repository…</span></li>
+          <li>На вкладке <span class="ui">GitHub.com</span> выберите <code>ваш-логин/ваш-логин.github.io</code>.</li>
+          <li>В поле <span class="ui">Local path</span> — куда положить папку. Предложенный вариант (<code>Документы\GitHub\ваш-логин.github.io</code>) подойдёт. Нажмите <span class="ui">Clone</span>.</li>
+        </ol>
+        <p><b>Клонировать</b> — значит скачать копию репозитория, которая помнит, откуда она. С этого момента работайте только в этой папке. Открыть её в VS Code можно прямо из GitHub Desktop: кнопка <span class="ui">Open in Visual Studio Code</span> (или <span class="ui">Repository → Open in Visual Studio Code</span>).</p>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Если после первого задания вы что-то меняли в старой папке <code>portfolio</code> и не загрузили на GitHub, скопируйте эти файлы в новую папку с заменой. Старую папку переименуйте, например, в <code>portfolio-old</code> — чтобы случайно не править не тот файл.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-3">
+        <h3><span class="step-no">Шаг 3</span>Сделайте первый коммит</h3>
+        <ol>
+          <li>В VS Code поменяйте подпись под именем (<code>class="tagline"</code>) — например, допишите «и JavaScript». Сохраните файл.</li>
+          <li>В GitHub Desktop слева, на вкладке <span class="ui">Changes</span>, появится <code>index.html</code>, а справа — что изменилось: красным — удалённые строки, зелёным — добавленные.</li>
+          <li>Внизу слева, в поле <span class="ui">Summary</span>, коротко опишите изменение: «Обновлена подпись». Нажмите <span class="ui">Commit to main</span>.</li>
+          <li>Нажмите <span class="ui">Push origin</span> вверху окна — коммит уйдёт на GitHub и изменение отобразится на сайте.</li>
+        </ol>
+        <p><b>Commit</b> — сохранить изменения в истории на вашем компьютере. <b>Push</b> — отправить их на GitHub. Пока вы не нажали Push, на сайте ничего не изменится.</p>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Обновите сайт — подпись под именем изменилась. В GitHub Desktop на вкладке <span class="ui">History</span> появился коммит «Обновлена подпись».</p>
+        </div>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Делайте коммит после каждого законченного шага: «Подключён script.js», «Кнопки фильтров», «Проекты в data.js». Описание пишите так, чтобы через месяц было понятно, что изменилось. «Правки» и «123» — не годятся.</p>
+        </div>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Поправили файл прямо на github.com? Тогда перед следующим Push нажмите <span class="ui">Fetch origin</span>, а потом <span class="ui">Pull origin</span> — так правка с GitHub попадёт к вам на компьютер. Иначе GitHub отклонит Push.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 2 ============ -->
+    <section class="part" id="part-2">
+      <p class="part-no">Часть 2</p>
+      <h2>Основы JavaScript</h2>
+      <p>HTML — содержимое страницы, CSS — оформление, а JavaScript — поведение: что происходит, когда вы нажимаете на кнопку. JavaScript — язык программирования, и в нём всё строго: одна пропущенная скобка или запятая — и код не работает. Зато браузер честно показывает, где ошибка.</p>
+      <p>Примеры в этой части короткие. Их удобно пробовать в <b>консоли браузера</b>: откройте свой сайт, нажмите <kbd>F12</kbd> и перейдите на вкладку <span class="ui">Console</span>. Вставьте код, нажмите <kbd>Enter</kbd> — результат появится сразу.</p>
+
+      <section class="step" id="step-4">
+        <h3><span class="step-no">Шаг 4</span>Подключите script.js</h3>
+        <ol>
+          <li>В VS Code создайте файл <code>script.js</code> рядом с <code>index.html</code> и вставьте в него одну строку:
+            <div class="code short" data-snippet="js-hello" data-lang="js" data-file="script.js" data-where="весь файл"></div>
+          </li>
+          <li>В <code>index.html</code> внутри <code>&lt;head&gt;</code>, сразу после строки со <code>style.css</code>, добавьте:
+            <div class="code short" data-snippet="html-script-tag" data-lang="html" data-file="index.html" data-where="после строки со style.css"></div>
+          </li>
+        </ol>
+        <ul>
+          <li><code>console.log(…)</code> выводит сообщение в консоль браузера. Это главный способ посмотреть, что происходит в коде.</li>
+          <li><code>defer</code> — «выполнить скрипт, когда страница загрузится». Без него скрипт запустится раньше, чем появятся элементы страницы, и не найдёт их.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Обновите страницу, нажмите <kbd>F12</kbd> и откройте <span class="ui">Console</span>. Там строка «Скрипт подключён!». Сделайте коммит «Подключён script.js» и нажмите Push.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-5">
+        <h3><span class="step-no">Шаг 5</span>Переменные</h3>
+        <div class="note pitfall">
+          <p class="note-label">Перед первой вставкой</p>
+          <p>Когда вы впервые вставите код в консоль, браузер предупредит, что вставлять чужой код опасно, и попросит набрать <code>allow pasting</code>. Наберите эти слова, нажмите <kbd>Enter</kbd> и вставьте код ещё раз. И правда — вставляйте в консоль только код, которому доверяете, например из этой инструкции.</p>
+        </div>
+        <div class="code" data-snippet="console-vars" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+        <ul>
+          <li><b>Переменная</b> — имя для значения. <code>const</code> — значение нельзя поменять, <code>let</code> — можно. Пишите <code>const</code>, а <code>let</code> — только если значение будет меняться.</li>
+          <li>Строки — в кавычках, числа — без. <code>true</code> и <code>false</code> — «да» и «нет».</li>
+          <li>В строку в <b>обратных кавычках</b> <code>`…`</code> можно подставлять значения: <code>${count}</code>. Обратная кавычка — на клавише <kbd>Ё</kbd> в английской раскладке.</li>
+          <li><code>//</code> — комментарий: всё после него до конца строки JavaScript пропускает. Комментарии вроде <code>// 7</code> показывают, что вы увидите в консоли.</li>
+          <li>Последней строкой консоль напишет <code>undefined</code> — это нормально: так она сообщает, что код ничего не вернул.</li>
+        </ul>
+      </section>
+
+      <section class="step" id="step-6">
+        <h3><span class="step-no">Шаг 6</span>Массивы и объекты</h3>
+        <p><b>Массив</b> — список значений в квадратных скобках:</p>
+        <div class="code" data-snippet="console-array" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+        <p>Счёт идёт с нуля: первый элемент — <code>[0]</code>. <code>length</code> — сколько элементов в массиве.</p>
+        <p><b>Объект</b> — набор пар «имя: значение» в фигурных скобках:</p>
+        <div class="code" data-snippet="console-object" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+        <p>Значение достаём через точку: <code>project.title</code>. Значением может быть что угодно — даже массив.</p>
+        <p><b>Массив объектов</b> — главное в этом задании. Ваш сайт — это и есть массив проектов, у каждого есть название, дата и категории:</p>
+        <div class="code" data-snippet="console-projects" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+        <div class="note tip">
+          <p class="note-label">Подсказка</p>
+          <p>Переменные в консоли живут до перезагрузки страницы. Если обновили страницу — вставьте массив <code>projects</code> ещё раз: он нужен в следующих шагах. Ошибка <code>has already been declared</code> означает, что переменная с таким именем уже есть, — обновите страницу и вставьте код заново.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-7">
+        <h3><span class="step-no">Шаг 7</span>Функции</h3>
+        <div class="code" data-snippet="console-func" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+        <ul>
+          <li><b>Функция</b> — кусок кода с именем, который можно вызывать много раз. В скобках — <b>параметры</b>: значения, которые функция получает. <code>return</code> — что функция вернёт.</li>
+          <li><b>Стрелочная функция</b> (<code>=&gt;</code>) — короткая запись того же самого. Если тело функции — одно выражение, <code>return</code> и фигурные скобки можно не писать. В современном JavaScript стрелочные функции встречаются постоянно.</li>
+          <li><code>includes</code> проверяет, есть ли значение в массиве, и возвращает <code>true</code> или <code>false</code>.</li>
+        </ul>
+      </section>
+
+      <section class="step" id="step-8">
+        <h3><span class="step-no">Шаг 8</span>filter и map</h3>
+        <p>Самый важный шаг этой части: <code>filter</code> и <code>map</code> понадобятся и в этом задании, и в следующем.</p>
+        <div class="code" data-snippet="console-methods" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+        <ul>
+          <li><code>forEach</code> — выполнить функцию для каждого элемента.</li>
+          <li><code>filter</code> — оставить только элементы, для которых функция вернула <code>true</code>. Исходный массив не меняется — получается новый.</li>
+          <li><code>map</code> — превратить каждый элемент во что-то другое: проект — в название, проект — в кусок HTML. Тоже получается новый массив.</li>
+          <li><code>join('')</code> — склеить массив строк в одну строку.</li>
+        </ul>
+        <div class="note try">
+          <p class="note-label">Попробуйте сами</p>
+          <p>1. Выведите в консоль названия всех проектов из категории <code>hobby</code>.</p>
+          <details class="answer">
+            <summary>Показать ответ</summary>
+            <div class="code short" data-snippet="console-answer-1" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+          </details>
+        </div>
+        <div class="note try">
+          <p class="note-label">Попробуйте сами</p>
+          <p>2. Соберите строку HTML <code>&lt;li&gt;…&lt;/li&gt;</code> только из учебных проектов (<code>study</code>).</p>
+          <details class="answer">
+            <summary>Показать ответ</summary>
+            <div class="code short" data-snippet="console-answer-2" data-lang="js" data-file="Console" data-console data-where="в консоль браузера"></div>
+          </details>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 3 ============ -->
+    <section class="part" id="part-3">
+      <p class="part-no">Часть 3</p>
+      <h2>Фильтры</h2>
+      <p>Сначала — самый простой способ: пометить записи таймлайна категориями прямо в HTML, а по клику на кнопку прятать лишние.</p>
+
+      <section class="step" id="step-9">
+        <h3><span class="step-no">Шаг 9</span>Категории и кнопки в HTML</h3>
+        <ol>
+          <li>Придумайте 2–4 категории для своих проектов: учёба, хакатоны, хобби, работа… В коде категории пишем латиницей, без пробелов: <code>study</code>, <code>hackathon</code>, <code>hobby</code>.</li>
+          <li>Добавьте каждой записи таймлайна атрибут <code>data-category</code> с её категорией. Если категорий несколько — через пробел: <code>data-category="study hackathon"</code>.
+            <div class="code" data-snippet="html-category-example" data-lang="html" data-file="index.html" data-where="пример — допишите атрибут в свои записи" data-nocopy></div>
+          </li>
+          <li>Между <code>&lt;h2&gt;Мой путь&lt;/h2&gt;</code> и <code>&lt;div class="timeline"&gt;</code> вставьте кнопки:
+            <div class="code" data-snippet="html-filters" data-lang="html" data-file="index.html" data-where="перед &lt;div class=&quot;timeline&quot;&gt;"></div>
+          </li>
+        </ol>
+        <p>Атрибуты <code>data-…</code> — ваши собственные: браузер их не использует, а JavaScript может прочитать. <code>data-filter</code> у кнопки должен в точности совпадать с категорией в <code>data-category</code>, а надпись на кнопке — любая.</p>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Над таймлайном появились кнопки — пока некрасивые и ничего не делают.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-10">
+        <h3><span class="step-no">Шаг 10</span>Оформление кнопок</h3>
+        <div class="code" data-snippet="css-filters" data-lang="css" data-file="style.css" data-where="в конец файла"></div>
+        <ul>
+          <li>Кнопки не наследуют шрифт страницы сами — поэтому <code>font: inherit</code>.</li>
+          <li><code>border-radius: 999px</code> — скругление больше высоты кнопки, получается «таблетка».</li>
+          <li><code>.is-active</code> — класс выбранной кнопки, <code>.is-hidden</code> — класс скрытой записи. Сами по себе они ничего не делают: добавлять и убирать их будет JavaScript.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Кнопки стали «таблетками», «Все» подсвечена. Сделайте коммит «Кнопки фильтров».</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-11">
+        <h3><span class="step-no">Шаг 11</span>Логика фильтров</h3>
+        <p>Замените всё содержимое <code>script.js</code>:</p>
+        <div class="code" data-snippet="js-part3" data-lang="js" data-file="script.js" data-where="весь файл"></div>
+        <p>Разберём по строчкам:</p>
+        <ul>
+          <li><code>document.querySelectorAll('.filter-btn')</code> — найти на странице все элементы с классом <code>filter-btn</code>. Селекторы — те же, что в CSS.</li>
+          <li><code>button.addEventListener('click', () =&gt; { … })</code> — «когда по кнопке кликнут, выполни эту функцию».</li>
+          <li><code>button.dataset.filter</code> — значение атрибута <code>data-filter</code> этой кнопки.</li>
+          <li><code>classList.remove</code> и <code>classList.add</code> — убрать или добавить класс. Сначала снимаем подсветку со всех кнопок, потом подсвечиваем нажатую.</li>
+          <li><code>item.dataset.category.split(' ')</code> превращает строку <code>"study hackathon"</code> в массив <code>['study', 'hackathon']</code>.</li>
+          <li><code>===</code> — «равно», <code>||</code> — «или»: показать запись, если выбрано «Все» или у неё есть нужная категория.</li>
+          <li><code>classList.toggle('is-hidden', !show)</code> — добавить класс, если второе значение <code>true</code>, и убрать, если <code>false</code>. <code>!</code> — «не»: прятать, если показывать не нужно.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Кнопки работают: «Хобби» оставляет только хобби, «Все» возвращает всё. Сделайте коммит «Фильтры таймлайна» и нажмите Push — фильтры появятся на сайте.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 4 ============ -->
+    <section class="part" id="part-4">
+      <p class="part-no">Часть 4</p>
+      <h2>Данные вместо копий HTML</h2>
+      <p>Фильтры работают. Но представьте, что вы добавляете новый проект с карточкой. Нужно: написать запись в таймлайне, написать карточку, проследить, чтобы <code>id</code> карточки совпал со ссылкой, и не забыть <code>data-category</code>. Четыре места — и в каждом можно ошибиться.</p>
+      <p>Сделаем так, чтобы каждый проект описывался один раз, а HTML для таймлайна и карточек собирал JavaScript:</p>
+
+      <figure class="flow">
+        <div class="flow-row">
+          <div class="flow-box"><b>data.js</b><span>массив projects — все проекты</span></div>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <div class="flow-box"><b>filter</b><span>оставить нужные — по нажатой кнопке</span></div>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <div class="flow-box"><b>map + join</b><span>каждый проект — в строку HTML</span></div>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <div class="flow-box"><b>innerHTML</b><span>вставить на страницу</span></div>
+        </div>
+        <figcaption>Страница — результат данных. Поменялись данные или выбранный фильтр — рисуем заново.</figcaption>
+      </figure>
+
+      <section class="step" id="step-12">
+        <h3><span class="step-no">Шаг 12</span>Все проекты — в data.js</h3>
+        <p>Создайте файл <code>data.js</code> рядом с <code>index.html</code>:</p>
+        <div class="code" data-snippet="js-data" data-lang="js" data-file="data.js" data-where="весь файл"></div>
+        <ul>
+          <li>Это массив объектов, как в шаге 6, только полей больше. У каждого объекта — одинаковый набор полей, объекты разделяются запятыми.</li>
+          <li><code>id</code> — короткое имя латиницей. Из него получится адрес карточки: <code>#project-cat</code>.</li>
+          <li><code>card: null</code> — у проекта нет карточки (<code>null</code> значит «ничего»). Если карточка есть, это объект с картинкой, описанием и массивом ссылок.</li>
+          <li>Запятая после последнего элемента разрешена — так удобнее добавлять новые.</li>
+        </ul>
+        <p>Перенесите в <code>data.js</code> свои проекты: тексты, даты и ссылки возьмите из <code>index.html</code>.</p>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Текст в одинарных кавычках <code>'…'</code> не может содержать одинарную кавычку — строка «закончится» раньше времени. Используйте «ёлочки» или поставьте перед кавычкой обратный слеш: <code>'It\'s'</code>.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-13">
+        <h3><span class="step-no">Шаг 13</span>Таймлайн из данных</h3>
+        <ol>
+          <li>В <code>index.html</code> подключите <code>data.js</code> — обязательно <b>перед</b> <code>script.js</code>:
+            <div class="code short" data-snippet="html-scripts-part4" data-lang="html" data-file="index.html" data-where="вместо строки со script.js"></div>
+          </li>
+          <li>Удалите из <code>index.html</code> все записи таймлайна. Кнопки остаются, а блок <code>.timeline</code> становится пустым и получает <code>id</code>:
+            <div class="code" data-snippet="html-timeline-part4" data-lang="html" data-file="index.html" data-where="вместо всего блока .timeline-block"></div>
+          </li>
+          <li>Замените всё содержимое <code>script.js</code>:
+            <div class="code" data-snippet="js-timeline" data-lang="js" data-file="script.js" data-where="весь файл"></div>
+          </li>
+        </ol>
+        <ul>
+          <li><code>timelineItem(p)</code> получает один проект и возвращает строку HTML — ту самую разметку, которую вы раньше писали руками. Значения подставляются через <code>${…}</code>.</li>
+          <li><code>p.tag ? A : B</code> — короткое «если»: если у проекта есть метка — <code>A</code>, иначе <code>B</code> (пустая строка).</li>
+          <li><code>if (p.card)</code> — запись становится ссылкой, только если у проекта есть карточка.</li>
+          <li><code>renderTimeline(list)</code> превращает массив проектов в строки (<code>map</code>), склеивает их (<code>join</code>) и вставляет в пустой блок (<code>innerHTML</code>).</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Таймлайн выглядит как раньше, хотя в <code>index.html</code> записей больше нет. Фильтры пока не работают, а карточки — всё ещё из HTML. Это исправим в следующих шагах.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-14">
+        <h3><span class="step-no">Шаг 14</span>Карточки из данных</h3>
+        <ol>
+          <li>Удалите из <code>index.html</code> все карточки <code>&lt;article class="card"&gt;…&lt;/article&gt;</code>. В разделе «Проекты» остаётся заголовок и пустой блок:
+            <div class="code short" data-snippet="html-cards-part4" data-lang="html" data-file="index.html" data-where="вместо всего раздела #projects"></div>
+          </li>
+          <li>Добавьте в конец <code>script.js</code>:
+            <div class="code" data-snippet="js-cards" data-lang="js" data-file="script.js" data-where="в конец файла"></div>
+          </li>
+        </ol>
+        <ul>
+          <li>Ссылки карточки — тоже массив, поэтому для них тоже <code>map</code> и <code>join</code>.</li>
+          <li><code>projects.filter((p) =&gt; p.card)</code> — только проекты, у которых есть карточка.</li>
+        </ul>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Карточки на месте, клик по записи в таймлайне ведёт к нужной карточке.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-15">
+        <h3><span class="step-no">Шаг 15</span>Фильтры на данных</h3>
+        <p>Добавьте в конец <code>script.js</code>:</p>
+        <div class="code" data-snippet="js-filters" data-lang="js" data-file="script.js" data-where="в конец файла"></div>
+        <p>Сравните с частью 3. Раньше мы прятали и показывали готовые элементы. Теперь при каждом клике выбираем нужные проекты из данных (<code>filter</code>) и рисуем таймлайн заново. Атрибуты <code>data-category</code> больше не нужны — категории живут в <code>data.js</code>.</p>
+        <p>Именно так работают современные сайты: страница — результат данных, и при изменении данных её перерисовывают. В следующем задании это за вас будет делать React.</p>
+        <div class="note check">
+          <p class="note-label">Проверка</p>
+          <p>Фильтры снова работают, в консоли нет красных ошибок. Сделайте коммит «Проекты в data.js» и нажмите Push.</p>
+        </div>
+      </section>
+
+      <section class="step" id="step-16">
+        <h3><span class="step-no">Шаг 16</span>Проверка новым проектом</h3>
+        <p>Скопируйте в начало массива <code>projects</code> любой проект с карточкой и поменяйте у копии <code>id</code> и название. Обновите страницу: новый проект появился и в таймлайне, и в карточках, ссылка из таймлайна ведёт к нему, фильтр его находит. Одно место вместо четырёх.</p>
+        <p>Посмотрели — удалите тестовый проект.</p>
+        <div class="note pitfall">
+          <p class="note-label">Частая ошибка</p>
+          <p>Пропала вся страница или её часть? Откройте консоль (<kbd>F12</kbd>): красная ошибка покажет файл и номер строки, например <code>data.js:42</code>. Чаще всего это пропущенная запятая между объектами или лишняя скобка — в этой строке или прямо перед ней.</p>
+        </div>
+      </section>
+
+      <section class="step" id="trouble">
+        <h3>Если что-то не работает</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Что видите</th><th>Что проверить</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Кнопки ничего не делают</td>
+                <td><ul>
+                  <li>Откройте консоль (<kbd>F12</kbd> → <span class="ui">Console</span>): есть ли красные ошибки?</li>
+                  <li><code>script.js</code> подключён в <code>&lt;head&gt;</code> и с <code>defer</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>projects is not defined</code></td>
+                <td><ul>
+                  <li><code>data.js</code> подключён, и строка с ним стоит <b>перед</b> <code>script.js</code>.</li>
+                  <li>Массив называется точно <code>projects</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>Cannot read properties of null</code></td>
+                <td><ul>
+                  <li><code>querySelector</code> не нашёл элемент: в <code>index.html</code> есть <code>id="timeline"</code> и <code>id="cards"</code>, а в <code>script.js</code> — <code>'#timeline'</code> и <code>'#cards'</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td><code>SyntaxError</code>, <code>Unexpected token</code></td>
+                <td><ul>
+                  <li>Пропущена запятая, скобка или кавычка — в строке, которую показывает консоль, или прямо перед ней.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Фильтр показывает пустой таймлайн</td>
+                <td><ul>
+                  <li>Категория в <code>data.js</code> и <code>data-filter</code> у кнопки пишутся одинаково: <code>hobby</code> ≠ <code>Hobby</code> ≠ <code>хобби</code>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Нет кнопки Push origin</td>
+                <td><ul>
+                  <li>Изменения не закоммичены: на вкладке <span class="ui">Changes</span> заполните Summary и нажмите <span class="ui">Commit to main</span>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>Push не проходит (rejected)</td>
+                <td><ul>
+                  <li>На GitHub есть изменения, которых нет у вас: <span class="ui">Fetch origin</span> → <span class="ui">Pull origin</span> → <span class="ui">Push origin</span>.</li>
+                </ul></td>
+              </tr>
+              <tr>
+                <td>У вас всё работает, а на сайте — старая версия</td>
+                <td><ul>
+                  <li>Нажат ли Push? На вкладке <span class="ui">History</span> у неотправленных коммитов есть стрелка вверх.</li>
+                  <li>Подождите 1–2 минуты и обновите страницу с <kbd>Ctrl</kbd>+<kbd>F5</kbd>.</li>
+                </ul></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ ЧАСТЬ 5 ============ -->
+    <section class="part" id="part-5">
+      <p class="part-no">Часть 5</p>
+      <h2>Сдача</h2>
+
+      <section class="step" id="step-17">
+        <h3><span class="step-no">Шаг 17</span>Сохраните версию v2</h3>
+        <p>Так же, как в первом задании:</p>
+        <ol>
+          <li>На странице репозитория справа найдите <span class="ui">Releases</span> и нажмите <span class="ui">Create a new release</span>.</li>
+          <li>В поле <span class="ui">Choose a tag</span> введите <code>v2</code> и выберите <span class="ui">Create new tag: v2 on publish</span>.</li>
+          <li>В <span class="ui">Release title</span> напишите «Версия 2» и нажмите <span class="ui">Publish release</span>.</li>
+        </ol>
+      </section>
+
+      <section class="step" id="checklist">
+        <h3>Самопроверка</h3>
+        <p class="progress" id="progress" aria-live="polite">Отмечено <b>0</b> из 10</p>
+        <ul class="checklist">
+          <li><label><input type="checkbox" id="chk-live"><span>Сайт открывается, всё из первого задания работает: меню, переходы к карточкам, версия для телефона</span></label></li>
+          <li><label><input type="checkbox" id="chk-buttons"><span>Над таймлайном есть кнопки «Все» и не меньше двух категорий</span></label></li>
+          <li><label><input type="checkbox" id="chk-active"><span>Нажатая кнопка подсвечена, «Все» возвращает все записи</span></label></li>
+          <li><label><input type="checkbox" id="chk-data"><span>Записи таймлайна и карточки собираются из <code>data.js</code> — в <code>index.html</code> их нет</span></label></li>
+          <li><label><input type="checkbox" id="chk-one-place"><span>Тестовый проект, добавленный только в <code>data.js</code>, появился и в таймлайне, и в карточках (и потом удалён)</span></label></li>
+          <li><label><input type="checkbox" id="chk-console"><span>В консоли (<kbd>F12</kbd> → Console) нет красных ошибок</span></label></li>
+          <li><label><input type="checkbox" id="chk-commits"><span>На вкладке History в GitHub Desktop не меньше 5 коммитов с понятными описаниями</span></label></li>
+          <li><label><input type="checkbox" id="chk-pushed"><span>Все коммиты отправлены (Push), изменения видны на сайте</span></label></li>
+          <li><label><input type="checkbox" id="chk-texts"><span>В <code>data.js</code> ваши проекты, а не проекты из примера</span></label></li>
+          <li><label><input type="checkbox" id="chk-release"><span>Создан релиз <code>v2</code></span></label></li>
+        </ul>
+
+        <div class="send">
+          <p><b>Отправьте преподавателю:</b></p>
+          <ul>
+            <li>ссылку на сайт — <code>https://ваш-логин.github.io</code>;</li>
+            <li>ссылку на репозиторий — <code>https://github.com/ваш-логин/ваш-логин.github.io</code>;</li>
+            <li>ответы на три вопроса — своими словами, по 2–3 предложения:</li>
+          </ul>
+          <ol>
+            <li>Что делает метод <code>filter</code>? Приведите пример из своего <code>data.js</code>.</li>
+            <li>Почему при клике на фильтр мы вызываем <code>renderTimeline</code> заново, а не прячем записи, как в части 3?</li>
+            <li>Чем коммит отличается от пуша? Что будет, если сделать коммит и не нажать Push?</li>
+          </ol>
+        </div>
+
+        <h4>Если хочется большего</h4>
+        <ul>
+          <li>Счётчик под кнопками: «Показано 3 из 6». Подсказка: <code>length</code> у массива до и после <code>filter</code>.</li>
+          <li>Поиск по названию: поле <code>&lt;input&gt;</code>, событие <code>input</code> и <code>title.includes(…)</code>.</li>
+          <li>Фильтры и для карточек проектов, а не только для таймлайна.</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- ============ ПОЛНЫЙ КОД ============ -->
+    <section class="part" id="full">
+      <p class="part-no">Приложение</p>
+      <h2>Полный код</h2>
+      <p>Так выглядят файлы после всех шагов. Это тот же код, что в примере в начале страницы. Картинки — те же, что в первом задании.</p>
+      <div class="code" data-snippet="full-html" data-lang="html" data-file="index.html" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="full-css" data-lang="css" data-file="style.css" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="js-data" data-lang="js" data-file="data.js" data-where="итоговый файл"></div>
+      <div class="code" data-snippet="full-js" data-lang="js" data-file="script.js" data-where="итоговый файл"></div>
+      <p class="foot">Отметки самопроверки сохраняются только в этом браузере.</p>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= ФРАГМЕНТЫ КОДА ================= -->
+<!-- В фрагментах "<\/script>" означает закрывающий тег script: так он не обрывает блок. -->
+
+<script type="text/plain" data-snippet="js-hello">
+console.log('Скрипт подключён!');
+</script>
+
+<script type="text/plain" data-snippet="html-script-tag">
+<script src="script.js" defer><\/script>
+</script>
+
+<script type="text/plain" data-snippet="console-vars">
+const title = 'Сайт-портфолио';    // строка — текст в кавычках
+let count = 6;                      // число
+const isPublished = true;           // логическое значение: true или false
+
+count = count + 1;                  // let можно менять, const — нет
+
+console.log(title);                 // Сайт-портфолио
+console.log(count);                 // 7
+console.log(`Проектов: ${count}`);  // Проектов: 7
+</script>
+
+<script type="text/plain" data-snippet="console-array">
+const categories = ['study', 'hackathon', 'hobby'];
+
+console.log(categories[0]);      // study — счёт с нуля!
+console.log(categories[2]);      // hobby
+console.log(categories.length);  // 3
+</script>
+
+<script type="text/plain" data-snippet="console-object">
+const project = {
+    title: 'Игра «Кот в лабиринте»',
+    date: 'Январь 2026',
+    categories: ['hobby'],
+};
+
+console.log(project.title);          // Игра «Кот в лабиринте»
+console.log(project.categories[0]);  // hobby
+</script>
+
+<script type="text/plain" data-snippet="console-projects">
+const projects = [
+    { title: 'Сайт-портфолио', categories: ['study'] },
+    { title: 'Трекер привычек', categories: ['hackathon'] },
+    { title: 'Игра «Кот в лабиринте»', categories: ['hobby'] },
+    { title: 'Курс «Основы HTML и CSS»', categories: ['study'] },
+];
+
+console.log(projects.length);    // 4
+console.log(projects[1].title);  // Трекер привычек
+</script>
+
+<script type="text/plain" data-snippet="console-func">
+function greet(name) {
+    return `Привет, ${name}!`;
+}
+console.log(greet('мир'));          // Привет, мир!
+
+// То же самое, но стрелочной функцией
+const greet2 = (name) => `Привет, ${name}!`;
+console.log(greet2('JavaScript'));  // Привет, JavaScript!
+
+// Функция, которая проверяет проект
+const isStudy = (p) => p.categories.includes('study');
+console.log(isStudy(projects[0]));  // true
+console.log(isStudy(projects[1]));  // false
+</script>
+
+<script type="text/plain" data-snippet="console-methods">
+// forEach — сделать что-то с каждым элементом
+projects.forEach((p) => console.log(p.title));
+
+// filter — оставить только подходящие элементы
+const study = projects.filter((p) => p.categories.includes('study'));
+console.log(study.length);   // 2
+
+// map — превратить каждый элемент во что-то другое
+const titles = projects.map((p) => p.title);
+console.log(titles);         // ['Сайт-портфолио', 'Трекер привычек', ...]
+
+// map + join — превратить проекты в одну строку HTML
+const html = projects.map((p) => `<li>${p.title}</li>`).join('');
+console.log(html);           // <li>Сайт-портфолио</li><li>Трекер привычек</li>...
+</script>
+
+<script type="text/plain" data-snippet="console-answer-1">
+projects
+    .filter((p) => p.categories.includes('hobby'))
+    .forEach((p) => console.log(p.title));
+// Игра «Кот в лабиринте»
+</script>
+
+<script type="text/plain" data-snippet="console-answer-2">
+const studyHtml = projects
+    .filter((p) => p.categories.includes('study'))
+    .map((p) => `<li>${p.title}</li>`)
+    .join('');
+console.log(studyHtml);
+// <li>Сайт-портфолио</li><li>Курс «Основы HTML и CSS»</li>
+</script>
+
+<script type="text/plain" data-snippet="html-category-example">
+<article class="timeline-item" data-category="study">
+    <a href="#project-portfolio">
+        <div class="date">Сентябрь 2026</div>
+        <h3>Сайт-портфолио</h3>
+        <p>Первый сайт на HTML и CSS, опубликован на GitHub Pages</p>
+    </a>
+</article>
+
+<article class="timeline-item" data-category="hackathon">
+    <div class="date">Март 2026</div>
+    <h3>Трекер привычек <span class="tag">Хакатон</span></h3>
+    <p>Дизайн интерфейса в команде из 4 человек за 48 часов</p>
+</article>
+</script>
+
+<script type="text/plain" data-snippet="html-filters">
+<div class="filters">
+    <button class="filter-btn is-active" data-filter="all">Все</button>
+    <button class="filter-btn" data-filter="study">Учёба</button>
+    <button class="filter-btn" data-filter="hackathon">Хакатоны</button>
+    <button class="filter-btn" data-filter="hobby">Хобби</button>
+</div>
+</script>
+
+<script type="text/plain" data-snippet="css-filters">
+/* ---------- Фильтры ---------- */
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;  /* на узком экране кнопки переносятся */
+    gap: 8px;
+    margin-bottom: 32px;
+}
+
+.filter-btn {
+    font: inherit;           /* кнопки не берут шрифт страницы сами */
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;    /* «таблетка» */
+    padding: 6px 16px;
+    cursor: pointer;         /* курсор-«рука» при наведении */
+}
+
+.filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Выбранная кнопка */
+.filter-btn.is-active {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+}
+
+/* Записи, скрытые фильтром */
+.is-hidden {
+    display: none;
+}
+</script>
+
+<script type="text/plain" data-snippet="js-part3">
+// Находим все кнопки фильтров и все записи таймлайна
+const buttons = document.querySelectorAll('.filter-btn');
+const items = document.querySelectorAll('.timeline-item');
+
+// Для каждой кнопки говорим, что делать при клике
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const filter = button.dataset.filter; // 'all', 'study', 'hackathon' или 'hobby'
+
+        // 1. Подсвечиваем только нажатую кнопку
+        buttons.forEach((b) => b.classList.remove('is-active'));
+        button.classList.add('is-active');
+
+        // 2. Каждую запись показываем или прячем
+        items.forEach((item) => {
+            const categories = item.dataset.category.split(' ');
+            const show = filter === 'all' || categories.includes(filter);
+            item.classList.toggle('is-hidden', !show);
+        });
+    });
+});
+</script>
+
+<script type="text/plain" data-snippet="js-data">
+// Все проекты сайта. Новые — сверху.
+// Чтобы добавить проект, скопируйте любой объект и поменяйте значения.
+const projects = [
+    {
+        id: 'portfolio',
+        date: 'Сентябрь 2026',
+        title: 'Сайт-портфолио',
+        summary: 'Первый сайт на HTML и CSS, опубликован на GitHub Pages',
+        categories: ['study'],
+        tag: '',
+        card: {
+            image: 'images/project-1.jpg',
+            alt: 'Скриншот сайта-портфолио',
+            text: 'Этот сайт: вёрстка на HTML и CSS, фильтры на JavaScript и публикация на GitHub Pages.',
+            links: [
+                { label: 'Код на GitHub', url: 'https://github.com/username/username.github.io' },
+            ],
+        },
+    },
+    {
+        id: 'coffee',
+        date: 'Май 2026',
+        title: 'Лендинг для кофейни',
+        summary: 'Учебный проект: макет в Figma и вёрстка',
+        categories: ['study'],
+        tag: '',
+        card: {
+            image: 'images/project-2.jpg',
+            alt: 'Главный экран лендинга кофейни',
+            text: 'Одностраничный сайт с меню, фотографиями зала и формой бронирования столика.',
+            links: [
+                { label: 'Открыть сайт', url: 'https://example.com' },
+                { label: 'Макет в Figma', url: 'https://example.com' },
+            ],
+        },
+    },
+    {
+        id: 'habits',
+        date: 'Март 2026',
+        title: 'Трекер привычек',
+        summary: 'Дизайн интерфейса в команде из 4 человек за 48 часов',
+        categories: ['hackathon'],
+        tag: 'Хакатон',
+        card: null,
+    },
+    {
+        id: 'cat',
+        date: 'Январь 2026',
+        title: 'Игра «Кот в лабиринте»',
+        summary: 'Игра на Scratch: 10 уровней и таблица рекордов',
+        categories: ['hobby'],
+        tag: '',
+        card: {
+            image: 'images/project-3.jpg',
+            alt: 'Уровень из игры «Кот в лабиринте»',
+            text: 'Кот ищет выход из лабиринта и собирает рыбок. Десять уровней, таймер и таблица рекордов.',
+            links: [
+                { label: 'Играть на Scratch', url: 'https://example.com' },
+            ],
+        },
+    },
+    {
+        id: 'html-course',
+        date: 'Октябрь 2025',
+        title: 'Курс «Основы HTML и CSS»',
+        summary: 'Онлайн-курс: 24 урока и итоговый проект',
+        categories: ['study'],
+        tag: '',
+        card: null,
+    },
+    {
+        id: 'photo',
+        date: 'Лето 2025',
+        title: 'Фотопроект «Город после дождя»',
+        summary: 'Серия из 12 фотографий',
+        categories: ['hobby'],
+        tag: '',
+        card: {
+            image: 'images/project-4.jpg',
+            alt: 'Фотография из серии «Город после дождя»',
+            text: 'Серия из 12 фотографий: отражения в лужах, мокрый асфальт и вечерние огни.',
+            links: [
+                { label: 'Смотреть все фото', url: 'https://example.com' },
+            ],
+        },
+    },
+];
+</script>
+
+<script type="text/plain" data-snippet="html-scripts-part4">
+<script src="data.js" defer><\/script>
+<script src="script.js" defer><\/script>
+</script>
+
+<script type="text/plain" data-snippet="html-timeline-part4">
+<div class="timeline-block">
+    <h2>Мой путь</h2>
+
+    <div class="filters">
+        <button class="filter-btn is-active" data-filter="all">Все</button>
+        <button class="filter-btn" data-filter="study">Учёба</button>
+        <button class="filter-btn" data-filter="hackathon">Хакатоны</button>
+        <button class="filter-btn" data-filter="hobby">Хобби</button>
+    </div>
+
+    <div class="timeline" id="timeline"></div>
+</div>
+</script>
+
+<script type="text/plain" data-snippet="js-timeline">
+// ---------- Таймлайн ----------
+
+const timeline = document.querySelector('#timeline');
+
+// Одна запись таймлайна: получает проект, возвращает строку HTML
+function timelineItem(p) {
+    const tag = p.tag ? `<span class="tag">${p.tag}</span>` : '';
+    const content = `
+        <div class="date">${p.date}</div>
+        <h3>${p.title} ${tag}</h3>
+        <p>${p.summary}</p>
+    `;
+
+    // Есть карточка — запись становится ссылкой на неё
+    if (p.card) {
+        return `<article class="timeline-item"><a href="#project-${p.id}">${content}</a></article>`;
+    }
+    return `<article class="timeline-item">${content}</article>`;
+}
+
+// Рисует таймлайн из массива проектов
+function renderTimeline(list) {
+    timeline.innerHTML = list.map((p) => timelineItem(p)).join('');
+}
+
+renderTimeline(projects);
+</script>
+
+<script type="text/plain" data-snippet="html-cards-part4">
+<section id="projects" class="projects">
+    <h2>Проекты</h2>
+    <div id="cards"></div>
+</section>
+</script>
+
+<script type="text/plain" data-snippet="js-cards">
+// ---------- Карточки ----------
+
+const cards = document.querySelector('#cards');
+
+// Одна карточка: получает проект, возвращает строку HTML
+function projectCard(p) {
+    const links = p.card.links
+        .map((link) => `<a href="${link.url}" target="_blank">${link.label}</a>`)
+        .join('');
+
+    return `
+        <article class="card" id="project-${p.id}">
+            <img src="${p.card.image}" alt="${p.card.alt}">
+            <div class="card-body">
+                <h3>${p.title}</h3>
+                <p>${p.card.text}</p>
+                <div class="card-links">${links}</div>
+            </div>
+        </article>
+    `;
+}
+
+// Рисует карточки из массива проектов
+function renderCards(list) {
+    cards.innerHTML = list.map((p) => projectCard(p)).join('');
+}
+
+renderCards(projects.filter((p) => p.card));
+</script>
+
+<script type="text/plain" data-snippet="js-filters">
+// ---------- Фильтры ----------
+
+const buttons = document.querySelectorAll('.filter-btn');
+
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+
+        // Подсвечиваем только нажатую кнопку
+        buttons.forEach((b) => b.classList.remove('is-active'));
+        button.classList.add('is-active');
+
+        // Выбираем нужные проекты и рисуем таймлайн заново
+        if (filter === 'all') {
+            renderTimeline(projects);
+        } else {
+            renderTimeline(projects.filter((p) => p.categories.includes(filter)));
+        }
+    });
+});
+</script>
+
+<script type="text/plain" data-snippet="full-html">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Имя Фамилия — портфолио</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <script src="data.js" defer><\/script>
+    <script src="script.js" defer><\/script>
+</head>
+<body>
+
+    <header class="top-bar">
+        <nav>
+            <a href="#about">Обо мне</a>
+            <a href="#projects">Проекты</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about" class="about">
+            <div class="profile">
+                <img src="images/avatar.jpg" alt="Фото: Имя Фамилия" class="avatar">
+                <h1>Имя Фамилия</h1>
+                <p class="tagline">Изучаю веб-разработку, дизайн и JavaScript</p>
+
+                <h2>Контакты</h2>
+                <ul class="contacts">
+                    <li><a href="mailto:name@example.com">name@example.com</a></li>
+                    <li><a href="https://t.me/username" target="_blank">Telegram</a></li>
+                    <li><a href="https://github.com/username" target="_blank">GitHub</a></li>
+                </ul>
+            </div>
+
+            <div class="timeline-block">
+                <h2>Мой путь</h2>
+
+                <div class="filters">
+                    <button class="filter-btn is-active" data-filter="all">Все</button>
+                    <button class="filter-btn" data-filter="study">Учёба</button>
+                    <button class="filter-btn" data-filter="hackathon">Хакатоны</button>
+                    <button class="filter-btn" data-filter="hobby">Хобби</button>
+                </div>
+
+                <div class="timeline" id="timeline"></div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects">
+            <h2>Проекты</h2>
+            <div id="cards"></div>
+        </section>
+    </main>
+
+</body>
+</html>
+</script>
+
+<script type="text/plain" data-snippet="css-task1">
+/* ---------- Цвета и основа ---------- */
+
+/* Цвета сайта: поменяйте здесь — и они сменятся везде */
+:root {
+    --bg: #14161f;      /* фон страницы */
+    --card: #1e2230;    /* фон карточек */
+    --text: #eef0f6;    /* основной текст */
+    --muted: #9aa1b5;   /* второстепенный текст */
+    --accent: #f5b83d;  /* акцент: даты, кружки, ссылки */
+    --line: #2e3345;    /* линии и рамки */
+}
+
+/* Убираем отступы, которые браузер добавляет сам */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth; /* плавная прокрутка к якорям */
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-top: 64px; /* место под шапку */
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ---------- Шапка ---------- */
+
+.top-bar {
+    position: fixed; /* шапка не уезжает при прокрутке */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(20, 22, 31, 0.8); /* цвет фона, но полупрозрачный */
+    backdrop-filter: blur(10px);             /* размываем то, что под шапкой */
+    border-bottom: 1px solid var(--line);
+    z-index: 10; /* шапка поверх всего остального */
+}
+
+.top-bar nav {
+    display: flex;
+    gap: 32px;
+}
+
+.top-bar a {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.top-bar a:hover {
+    color: var(--accent);
+}
+
+/* Чтобы шапка не закрывала начало раздела после перехода по меню */
+.about,
+.projects {
+    scroll-margin-top: 64px;
+}
+
+/* ---------- Две колонки и профиль ---------- */
+
+.about {
+    display: flex;
+    gap: 64px;
+    max-width: 1100px;
+    margin: 0 auto;  /* по центру страницы */
+    padding: 48px 24px;
+}
+
+.profile {
+    flex: 1;         /* левая колонка: 1 часть ширины */
+}
+
+.timeline-block {
+    flex: 1.5;       /* правая колонка: 1,5 части */
+}
+
+.avatar {
+    display: block;
+    width: 160px;
+    height: 160px;
+    object-fit: cover;   /* фото заполняет круг без искажений */
+    border-radius: 50%;  /* квадрат превращается в круг */
+    border: 4px solid var(--accent);
+    margin-bottom: 24px;
+}
+
+h1 {
+    font-size: 40px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.tagline {
+    font-size: 20px;
+    color: var(--muted);
+    margin-bottom: 32px;
+}
+
+.profile h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+.contacts {
+    list-style: none;    /* убираем точки у списка */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contacts a {
+    font-weight: 500;
+}
+
+.contacts a:hover {
+    color: var(--accent);
+}
+
+/* ---------- Таймлайн ---------- */
+
+.timeline-block h2 {
+    font-size: 24px;
+    padding-bottom: 8px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--line);
+}
+
+/* Вертикальная линия — это левая рамка блока */
+.timeline {
+    border-left: 2px solid var(--line);
+    padding-left: 32px;
+}
+
+.timeline-item {
+    position: relative;  /* точка отсчёта для кружка */
+    margin-bottom: 40px;
+}
+
+/* Кружок на линии */
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: -41px;         /* 32 (отступ) + 1 (половина линии) + 8 (половина кружка) */
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--bg);
+    border: 3px solid var(--accent);
+}
+
+.date {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.timeline-item h3 {
+    font-size: 20px;
+    margin: 2px 0 4px;
+}
+
+.timeline-item p {
+    color: var(--muted);
+}
+
+/* Маленькая метка рядом с названием */
+.tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+/* Записи со ссылкой на карточку */
+.timeline-item a {
+    display: block;
+}
+
+.timeline-item a:hover h3 {
+    color: var(--accent);
+}
+
+/* «Запись, внутри которой ссылка под курсором» — заливаем кружок */
+.timeline-item:has(a:hover)::before {
+    background-color: var(--accent);
+}
+
+/* ---------- Карточки проектов ---------- */
+
+.projects {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    border-top: 1px solid var(--line);
+}
+
+.projects h2 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Карточка: картинка слева, текст справа */
+.card {
+    display: flex;
+    background-color: var(--card);
+    border-radius: 16px;
+    overflow: hidden;          /* обрезаем углы картинки по скруглению */
+    margin-bottom: 32px;
+    scroll-margin-top: 88px;   /* отступ под шапку при переходе из таймлайна */
+}
+
+.card img {
+    width: 320px;
+    height: 220px;
+    object-fit: cover;
+    flex-shrink: 0;            /* картинка не сжимается, даже если текста много */
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.card-body h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.card-body p {
+    color: var(--muted);
+    margin-bottom: 16px;
+}
+
+.card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card-links a {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.card-links a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Версия для телефона ---------- */
+
+/* Правила внутри работают, только если окно уже 800px */
+@media (max-width: 800px) {
+    .about {
+        flex-direction: column;  /* колонки друг под другом */
+        gap: 48px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .card {
+        flex-direction: column;  /* картинка над текстом */
+    }
+
+    .card img {
+        width: 100%;
+        height: 200px;
+    }
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+(function () {
+  // ---- собрать фрагменты ----
+  var S = {};
+  document.querySelectorAll('script[type="text/plain"][data-snippet]').forEach(function (el) {
+    S[el.dataset.snippet] = el.textContent
+      .replace(/^\r?\n/, '')
+      .replace(/\s+$/, '')
+      .replace(/<\\\/script>/g, '\x3C/script>');
+  });
+
+  // Итоговые файлы: CSS из задания 1 + фильтры, script.js — три части по шагам
+  S['full-css'] = S['css-task1'] + '\n\n' + S['css-filters'];
+  S['full-js'] = [S['js-timeline'], S['js-cards'], S['js-filters']].join('\n\n');
+
+  // ---- блоки кода ----
+  var HLJS = { html: 'xml', css: 'css', js: 'javascript', plain: 'plaintext' };
+
+  function copyText(text, btn, pre) {
+    function done(ok) {
+      btn.textContent = ok ? 'Скопировано' : 'Выделено — нажмите Ctrl+C';
+      btn.classList.toggle('done', ok);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function () { btn.textContent = 'Копировать'; btn.classList.remove('done'); }, 2000);
+    }
+    function fallback() {
+      var r = document.createRange();
+      r.selectNodeContents(pre);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      done(false);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+    } catch (e) { fallback(); }
+  }
+
+  document.querySelectorAll('.code[data-snippet]').forEach(function (host) {
+    var key = host.dataset.snippet;
+    var text = S[key] || '';
+    var lang = host.dataset.lang || 'html';
+
+    var bar = document.createElement('div');
+    bar.className = 'code-bar';
+    if (host.dataset.file) {
+      var f = document.createElement('span');
+      f.className = 'code-file' + ('console' in host.dataset ? ' console' : '');
+      f.textContent = host.dataset.file;
+      bar.appendChild(f);
+    }
+    if (host.dataset.where) {
+      var w = document.createElement('span');
+      w.className = 'code-where';
+      var where = host.dataset.where;
+      var cm = where.match(/^(вместо |перед )(.+)$/);
+      if (cm && cm[2].charAt(0) === '<') {
+        w.appendChild(document.createTextNode(cm[1]));
+        var b = document.createElement('b');
+        b.textContent = cm[2];
+        w.appendChild(b);
+      } else {
+        w.textContent = where;
+      }
+      bar.appendChild(w);
+    }
+
+    var pre = document.createElement('pre');
+    var code = document.createElement('code');
+    code.className = 'language-' + (HLJS[lang] || 'plaintext');
+    code.textContent = text;
+    pre.appendChild(code);
+
+    if (!('nocopy' in host.dataset)) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy';
+      btn.textContent = 'Копировать';
+      btn.addEventListener('click', function () { copyText(text, btn, pre); });
+      bar.appendChild(btn);
+    }
+    if (bar.childNodes.length) host.appendChild(bar);
+    host.appendChild(pre);
+
+    if (window.hljs && lang !== 'plain') {
+      try { window.hljs.highlightElement(code); } catch (e) {}
+    }
+  });
+
+  // ---- живой пример ----
+  function placeholder(label, hueA, hueB, w, h) {
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0" stop-color="hsl(' + hueA + ',55%,58%)"/><stop offset="1" stop-color="hsl(' + hueB + ',50%,28%)"/>' +
+      '</linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/>' +
+      '<text x="50%" y="50%" fill="rgba(255,255,255,0.88)" font-family="Consolas, monospace" font-size="' + Math.round(h / 10) +
+      '" text-anchor="middle" dominant-baseline="middle">' + label + '</text></svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg).replace(/'/g, '%27');
+  }
+  var IMG = {
+    'avatar.jpg': placeholder('avatar.jpg', 38, 12, 400, 400),
+    'project-1.jpg': placeholder('project-1.jpg', 222, 250, 1280, 720),
+    'project-2.jpg': placeholder('project-2.jpg', 28, 355, 1280, 720),
+    'project-3.jpg': placeholder('project-3.jpg', 150, 195, 1280, 720),
+    'project-4.jpg': placeholder('project-4.jpg', 265, 300, 1280, 720)
+  };
+  // Внутри примера ссылки-якоря прокручивают страницу, остальные ссылки отключены
+  var clickScript = '\x3Cscript>document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;e.preventDefault();' +
+    'var h=a.getAttribute("href")||"";if(h.charAt(0)==="#"){var t=document.getElementById(h.slice(1));if(t)t.scrollIntoView({behavior:"smooth"});}});\x3C/script>';
+
+  // data.js и script.js вставляются прямо в страницу, а картинки заменяются заглушками
+  var data = S['js-data'].replace(/'images\/([^']+)'/g, function (m, name) { return "'" + (IMG[name] || '') + "'"; });
+  var doc = S['full-html']
+    .replace('<link rel="stylesheet" href="style.css">', '<style>\n' + S['full-css'] + '\n</style>')
+    .replace(/\n\s*<script src="(data|script)\.js" defer><\/script>/g, '')
+    .replace(/src="images\/([^"]+)"/g, function (m, name) { return 'src="' + (IMG[name] || '') + '"'; })
+    .replace('</body>', '\x3Cscript>\n' + data + '\n\n' + S['full-js'] + '\n\x3C/script>\n' + clickScript + '\n</body>');
+
+  var frame = document.getElementById('pv-frame');
+  var stage = document.getElementById('pv-stage');
+  var win = document.getElementById('pv-window');
+  var screen = document.getElementById('pv-screen');
+  var btnDesk = document.getElementById('pv-desktop');
+  var btnPhone = document.getElementById('pv-phone');
+  frame.srcdoc = doc;
+
+  var SIZES = { desktop: [1200, 760], phone: [390, 720] };
+  var mode = 'desktop';
+  function fit() {
+    var size = SIZES[mode];
+    var inner = stage.clientWidth - 32 - (mode === 'phone' ? 12 : 0);
+    var s = Math.min(1, inner / size[0]);
+    frame.style.width = size[0] + 'px';
+    frame.style.height = size[1] + 'px';
+    frame.style.transform = 'scale(' + s + ')';
+    screen.style.width = Math.floor(size[0] * s) + 'px';
+    screen.style.height = Math.floor(size[1] * s) + 'px';
+  }
+  function setMode(m) {
+    mode = m;
+    win.classList.toggle('phone', m === 'phone');
+    btnDesk.setAttribute('aria-pressed', String(m === 'desktop'));
+    btnPhone.setAttribute('aria-pressed', String(m === 'phone'));
+    fit();
+  }
+  btnDesk.addEventListener('click', function () { setMode('desktop'); });
+  btnPhone.addEventListener('click', function () { setMode('phone'); });
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+  window.addEventListener('resize', fit);
+  fit();
+
+  // ---- самопроверка ----
+  var KEY = 'portfolio-task2-checklist';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var boxes = document.querySelectorAll('.checklist input');
+  var progress = document.getElementById('progress');
+  function update() {
+    var n = 0;
+    boxes.forEach(function (b) { if (b.checked) n++; });
+    progress.innerHTML = 'Отмечено <b>' + n + '</b> из ' + boxes.length;
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.id];
+    b.addEventListener('change', function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+      update();
+    });
+  });
+  update();
+})();
+</script>
