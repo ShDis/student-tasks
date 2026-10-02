@@ -456,16 +456,17 @@
   /* ---------- requirement list ---------- */
   .reqs { list-style: none; padding: 0; display: grid; gap: 10px; }
   .reqs li {
-    display: grid;
-    grid-template-columns: 22px 1fr;
-    gap: 10px;
+    position: relative;
+    padding-left: 32px;
     margin: 0;
   }
   .reqs li::before {
     content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
     width: 14px;
     height: 14px;
-    margin-top: 6px;
     border: 2px solid var(--accent);
     border-radius: 4px;
   }
